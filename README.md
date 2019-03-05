@@ -2,6 +2,8 @@
 SubFuz is a fuzzing tool used for enumerating subdomains through multiple methods. 
 This tool has various buildt in enumeration methods, at the same time as plugin support to enrich your result from different 3rd party sources. SubFuz accepts internationalized domain name (IDN) allowing you to scan domains like  пример.example, 例.example, мысал.example - as well as use UTF-8 based words in your fuzzing dictionary.
 
+When SubFuz identifies a valid subdomain, it will perform mutation techniques on the subdomain to find similar, adjacent or deeper subdomains. As an example, if web.exampe.com was discovered, SubFuz will then check DNS to see if there's a web01.example.com, web02.example.com and so on. SubFuz will also append any words listed in the config option "deep_domains", testing for things such as admin.web.example.com, api.web.example.com and so on.
+
 ### Requirements
 [![](https://img.shields.io/badge/python-2.7-blue.svg)](https://www.python.org/download/releases/2.7/)
 
