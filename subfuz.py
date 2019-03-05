@@ -62,6 +62,7 @@ Author: Torstein Mauseth @ Netsecurity
     optional_args.add_argument('-w', help='Specify fuzzing dictionary to use', dest='dictionary')
     optional_args.add_argument('-o', help='Write output to a file', dest='log_filename', required=False, default=False)
     optional_args.add_argument('-csv', help='Write output to a csv file. Use - for stdout', dest='csv_filename', required=False, default=False)
+    optional_args.add_argument('-deep', help='Specify fuzzing dictionary for deep subdomain testing', required=False, default=False)
     optional_args.add_argument('-dns', default=None, help='{:32}'.format('Override DNS server to query')+ '{:5}'.format('[ %s ]' % override))
     optional_args.add_argument('-protocol', default=protocol, help='{:32}'.format('Override DNS protocol') + '{:5}'.format('[ %s ]' % protocol))
     optional_args.add_argument('-record', default=record, help='{:32}'.format('Override DNS query record') + '{:5}'.format('[ %s ]' % protocol))

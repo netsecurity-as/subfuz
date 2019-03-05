@@ -22,6 +22,9 @@
         "virustotal":{
             "enable": false,
             "api-key":""
+        },
+        "crtsh":{
+            "enable": true
         }
     }
 }

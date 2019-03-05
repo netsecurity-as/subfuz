@@ -38,6 +38,8 @@ class SubFuz():
         self.threads = args.t
         self.zone = args.zone
         self.retry = config['config']['retry']
+        if args.deep: self.deep_domains = map(unicode.strip, io.open(args.deep, encoding='utf-8', mode='r').readlines())
+        else: self.deep_domains = config["config"]["deep_domains"]
         self.timeout = args.p
         if args.dns: self.dns = args.dns
         else: self.dns = config['config']['dns_fallback']
@@ -232,8 +234,7 @@ class SubFuz():
                 for d in reversed(range(0, 21)):
                     self.append_target('%s%02d' % (subdomain, d))
                     self.append_target('%s%d' % (subdomain, d))
-                deep_domains = self.config["config"]["deep_domains"]
-                for s in deep_domains:
+                for s in self.deep_domains:
                     self.append_target(s + '.' + subdomain)
             except Exception as e:
                 self.log.fatal(('Adding new target %s, %s' % (new_domain, subdomain)), False)
