@@ -61,7 +61,7 @@ Author: Torstein Mauseth @ Netsecurity
     required_args.add_argument('-l', help='Specify list of domains to fuzz', dest='target_list')
     optional_args.add_argument('-w', help='Specify fuzzing dictionary to use', dest='dictionary')
     optional_args.add_argument('-o', help='Write output to a file', dest='log_filename', required=False, default=False)
-    optional_args.add_argument('-csv', help='Write output to a csv file', dest='csv_filename', required=False, default=False)
+    optional_args.add_argument('-csv', help='Write output to a csv file. Use - for stdout', dest='csv_filename', required=False, default=False)
     optional_args.add_argument('-dns', default=None, help='{:32}'.format('Override DNS server to query')+ '{:5}'.format('[ %s ]' % override))
     optional_args.add_argument('-protocol', default=protocol, help='{:32}'.format('Override DNS protocol') + '{:5}'.format('[ %s ]' % protocol))
     optional_args.add_argument('-record', default=record, help='{:32}'.format('Override DNS query record') + '{:5}'.format('[ %s ]' % protocol))
@@ -107,7 +107,8 @@ if __name__ == "__main__":
     elif args.target:
         targets = [args.target]
     for domain in targets:
-        print ("Scanning: %s" % domain)
+        if not args.quiet: 
+            print ("Scanning: %s" % domain)
         sf = SubFuz(domain, config, args, PLUGINS_DIR, CORE_DIR)
         sf.dns_server()
         sf.check_wildcard(sf.domain)

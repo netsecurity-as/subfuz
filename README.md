@@ -30,7 +30,7 @@ required arguments:
 optional arguments:
   -w DICTIONARY       Specify fuzzing dictionary to use
   -o LOG_FILENAME     Write output to a file
-  -csv CSV_FILENAME   Write output to a csv file
+  -csv CSV_FILENAME   Write output to a csv file. Use - for stdout
   -dns DNS            Override DNS server to query    [ None ]
   -protocol PROTOCOL  Override DNS protocol           [ None ]
   -record RECORD      Override DNS query record       [ None ]
