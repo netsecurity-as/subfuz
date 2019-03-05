@@ -48,7 +48,10 @@ class Output():
                 sys.exit(1)
         if csv_filename:
             try:
-                self.csvfile = open(csv_filename, "a+")
+                if csv_filename == "-":
+                    self.csvfile = sys.stdout
+                else:
+                    self.csvfile = open(csv_filename, "a+")
             except:
                 self.fatal("Could not open output file: %s" % csv_filename, False)
                 sys.exit(1)
