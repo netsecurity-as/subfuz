@@ -28,8 +28,8 @@ def execute(domain, credentials):
             else:
                 return None
         elif r.status_code == 403:
-            raise VTError('Virustotal Plugin: API Unauthorized')
+            raise VTError('Virustotal plugin: API Unauthorized')
         else:
-            raise VTError('Virustotal Plugin: Unexpected Error')
+            raise VTError('Virustotal plugin: Unexpected Error')
     except:
         raise
