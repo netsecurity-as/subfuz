@@ -54,7 +54,7 @@ See configuration [**config.json**](/config.json) to customizing default options
 | dns_fallback | 8.8.8.8 | Fallback DNS server to resolve queries |
 | dns_fallback_protocol | UDP | Fallback protocol to resolv with |
 | dns_fallback_record | ANY | Fallback record type to resolv with |
-| dns_override | null | Permanently override any DNS servers |
+| dns_override | null | Permanently override DNS server |
 | dns_override_protocol | null | Permanently override DNS protocol |
 | dns_override_record | null | Permanently override DNS record |
 | throttle | 0 | Ratelimit each thread by x milliseconds |
