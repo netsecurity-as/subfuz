@@ -4,7 +4,7 @@ import signal
 from core.logger import Output
 
 NAME        = 'crtsh'
-ARG_HELP    = 'crt.sh subdomain grabber'
+ARG_HELP    = 'crt.sh subdomain certificates'
 
 handler = SIGINT_handler()
 signal.signal(signal.SIGINT, handler.signal_handler)
@@ -21,7 +21,7 @@ def execute(domain, config):
         query = 'https://crt.sh/?q=%25.' + domain.rstrip() + '&output=json'
         r = requests.get(query)
         if r.status_code == 200:
-            data = json.loads(r.text)
+            data = json.loads(r.content)
             d = []
             for x in data:
                 d.append(x['name_value'].lstrip('*.'))

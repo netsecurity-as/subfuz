@@ -74,7 +74,8 @@ SubFuz is currently extended with the following plugins:
 | Plugin | README | Author |
 | ------ | ------ | ------ |
 | VirusTotal | [/plugins/virustotal/README.md](plugins/virustotal/README.md) | [Eplox](https://github.com/Eplox/) |
-| crtsh | [/plugins/crtsh/README.md](plugins/crtsh/README.md) | [Eplox](https://github.com/Eplox/) |
+| crt.sh | [/plugins/crtsh/README.md](plugins/crtsh/README.md) | [Eplox](https://github.com/Eplox/) |
+| Censys | [/plugins/censys/README.md](plugins/censys/README.md) | [Eplox](https://github.com/Eplox/) |
 
 ### Recommendations
 Grab the domain fuzzing lists from Daniel Miessler repository: https://github.com/danielmiessler/SecLists/tree/master/Discovery/DNS
