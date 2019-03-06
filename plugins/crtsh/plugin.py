@@ -24,7 +24,7 @@ def execute(domain, config):
             data = json.loads(r.content)
             d = []
             for x in data:
-                d.append(x['name_value'].lstrip('*.'))
+                d.append(x['name_value'].strip('*').strip('.'))
             return set(d)
         else:
             raise CRTError('crtsh plugin: Unexpected Error')

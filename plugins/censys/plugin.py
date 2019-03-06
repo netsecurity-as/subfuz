@@ -34,7 +34,7 @@ def execute(domain, config):
                 max_pages = min(data['metadata']['pages'], max_pages)
                 for x in data['results']:
                     for y in x['parsed.names']:
-                        subdomains.append(y.lstrip('*.'))
+                        subdomains.append(y.strip('*').strip('.'))
             else:
                 raise CENSYSError('Censys plugin: Unknown error, HTTP status code: %d' % r.status_code)
         return set(subdomains)
