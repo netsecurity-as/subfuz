@@ -4,7 +4,7 @@ import signal
 from core.logger import Output
 
 NAME        = 'virustotal'
-ARG_HELP    = 'virus total subdomain scanner'
+ARG_HELP    = 'VirusTotal subdomain certificates'
 
 handler = SIGINT_handler()
 signal.signal(signal.SIGINT, handler.signal_handler)
@@ -21,7 +21,7 @@ def execute(domain, credentials):
         query = "https://www.virustotal.com/vtapi/v2/domain/report?apikey=%s&domain=%s" % (credentials['api-key'], domain.rstrip())
         r = requests.get(query)
         if r.status_code == 200:
-            data = json.loads(r.text)
+            data = json.loads(r.content)
             if 'subdomains' in data:
                 # data should always be returned as a array
                 return data['subdomains']

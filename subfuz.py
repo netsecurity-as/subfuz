@@ -12,6 +12,8 @@ banner = '''             ___     _____
       \/          \/                 \/\n
 '''
 
+VERSION = "2.0.5"
+
 (SF_FILE, SF_DIR) = env.setup_core_paths(os.path.realpath(__file__))
 PLUGINS_DIR     = os.path.join(SF_DIR, "plugins")
 CORE_DIR        = os.path.join(SF_DIR, "core")
@@ -47,9 +49,9 @@ def initialize():
 Example usage:
   python subfuz.py -d example.com -w domain_dictionary.txt -all
 
-SubFuz Version: 2.0.4
+SubFuz %s
 Author: Torstein Mauseth @ Netsecurity
-'''
+''' % VERSION
     parser = argparse.ArgumentParser(epilog=example_text, formatter_class=argparse.RawTextHelpFormatter)
     parser._action_groups.pop()
     required_args = parser.add_argument_group('required arguments')
