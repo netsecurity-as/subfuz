@@ -226,21 +226,22 @@ class SubFuz():
             print e
 
     def new_targets(self, new_domain):
-        if not self.check_wildcard(new_domain):
-            try:
-                self.mutex.acquire()
-                subdomain = new_domain.split('.')[0].rstrip('0123456789')
-                self.append_target(subdomain)  # this is here for adding new targets found from plugins
-                for d in reversed(range(0, 21)):
-                    self.append_target('%s%02d' % (subdomain, d))
-                    self.append_target('%s%d' % (subdomain, d))
-                for s in self.deep_domains:
-                    self.append_target(s + '.' + subdomain)
-            except Exception as e:
-                self.log.fatal(('Adding new target %s, %s' % (new_domain, subdomain)), False)
-                print (e)
-            finally:
-                self.mutex.release()
+        if not self.domain == new_domain.rstrip('.') and self.domain in new_domain:
+            if not self.check_wildcard(new_domain):
+                try:
+                    self.mutex.acquire()
+                    subdomain = new_domain.split('.')[0].rstrip('0123456789')
+                    self.append_target(subdomain)  # this is here for adding new targets found from plugins
+                    for d in reversed(range(0, 21)):
+                        self.append_target('%s%02d' % (subdomain, d))
+                        self.append_target('%s%d' % (subdomain, d))
+                    for s in self.deep_domains:
+                        self.append_target(s + '.' + subdomain)
+                except Exception as e:
+                    self.log.fatal(('Adding new target %s, %s' % (new_domain, subdomain)), False)
+                    print (e)
+                finally:
+                    self.mutex.release()
 
 
     def parse_record(self, ans, query):
