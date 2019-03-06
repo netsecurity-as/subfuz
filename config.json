@@ -14,7 +14,7 @@
                         "demo", "dev", "devapp", "email", "gw", "intra", "mail", "new", "old", "owa", "phpmyadmin",
                         "prod", "remote", "security", "stage", "store", "support", "test", "webconf", "webmail",
                         "www"],
-        "txt_record_search":["v=spf","v=DKIM"]
+        "txt_record_search":["v=spf","v=DKIM", "v=DMARC"]
     },
     "plugins":{
         "_comment":  "name of plugin config must be equal to constant  'NAME' for the plugin",

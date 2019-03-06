@@ -57,9 +57,9 @@ class SubFuz():
 
 
     def dns_server(self):
-        ns_record = lookup(self.domain, 'NS', self.dns, self.protocol, self.timeout)
+        ns_record = lookup(self.domain, 'NS', self.config['config']['dns_fallback'], self.protocol, self.timeout)
         if not ns_record:
-            ns_record = lookup(".".join(self.domain.split('.')[-2:]), 'NS', self.dns, self.protocol, self.timeout)
+            ns_record = lookup(".".join(self.domain.split('.')[-2:]), 'NS', self.config['config']['dns_fallback'], self.protocol, self.timeout)
             # TODO very ugly way of doing it, https://publicsuffix.org/list/public_suffix_list.dat is on the to-do list
             # currently doesn't handle target domain inputs like subdomain.domain.co.uk or similar domains very well yet.
         # Grab NS record data
@@ -72,7 +72,7 @@ class SubFuz():
             for y in nameservers[0]:
                 dns_server_name = y.target.to_text()
                 # get DNS server IP
-                dns_server = lookup(dns_server_name,'A', self.dns, self.protocol, self.timeout)[0].items[0].to_text()
+                dns_server = lookup(dns_server_name,'A', self.config['config']['dns_fallback'], self.protocol, self.timeout)[0].items[0].to_text()
                 # Zone transfer
                 if self.zone:
                     try:
@@ -212,7 +212,7 @@ class SubFuz():
                 sys.stdout.flush()
             time.sleep(0.05)
         self.log.printer()
-        if not self.args.quiet: sys.stdout.write(' ' * 60 + '\n')
+        if not self.args.quiet: sys.stdout.write(' ' * 64 + '\n')
         return
 
 
@@ -321,7 +321,8 @@ class SubFuz():
                             if d == self.domain:
                                 self.append_target(n)
                             else:
-                                self.append_target(n + '.' + d.strip(self.domain))
+                                self.append_target(n + '.' + d.replace(self.domain, '').strip('.'))
+
         except Exception as e:
             self.log.fatal(('Parsing records for: %s with answer %s' % (query, ans)), False)
             print (e)
@@ -426,7 +427,7 @@ class SubFuz():
                 time.sleep(0.05)
             # just to ensure everything is out
             self.log.printer()
-            if not self.args.quiet: sys.stdout.write(' ' * 60 + '\n')
+            if not self.args.quiet: sys.stdout.write(' ' * 64 + '\n')
 
     def stats(self):
         if self.sl.ptr_scanned == 0:
