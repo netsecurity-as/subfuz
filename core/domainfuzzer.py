@@ -128,54 +128,56 @@ class SubFuz():
         try:
             wildcard = ''.join(random.choice(string.ascii_lowercase) for _ in range(15))
             ans = lookup( (wildcard + '.' + domain_addr.encode('utf-8')), self.record, self.dns, self.protocol, self.timeout)
-            wc = False
-            d = domain_addr.encode('utf-8')
-            for r in ans:
-                if r.rdtype == 1:  # A RECORD
-                    item = []
-                    for x in r.items:
-                        item.append(x.to_text())
-                    self.a_wildcard += item
-                    self.log.warn('{:40}'.format("Wildcard A record found for %s: " % d) + ", ".join(item), True)
-                    wc = True
+            if ans:
+                wc = False
+                d = domain_addr.encode('utf-8')
+                for r in ans:
+                    if r.rdtype == 1:  # A RECORD
+                        item = []
+                        for x in r.items:
+                            item.append(x.to_text())
+                        self.a_wildcard += item
+                        self.log.warn('{:40}'.format("Wildcard A record found for %s: " % d) + ", ".join(item), True)
+                        wc = True
 
-                if r.rdtype == 5:  # CNAME RECORD
-                    item = []
-                    for x in r.items:
-                        item.append(x.to_text())
-                    self.cname_wildcard += item
-                    self.log.warn('{:40}'.format("Wildcard CNAME record found for %s: " % d) + ", ".join(item), True)
-                    wc = True
+                    if r.rdtype == 5:  # CNAME RECORD
+                        item = []
+                        for x in r.items:
+                            item.append(x.to_text())
+                        self.cname_wildcard += item
+                        self.log.warn('{:40}'.format("Wildcard CNAME record found for %s: " % d) + ", ".join(item), True)
+                        wc = True
 
-                if r.rdtype == 16:  # TXT RECORD
-                    item = []
-                    for x in r.items:
-                        item.append(x.to_text())
-                    self.txt_wildcard += item
-                    self.log.warn('{:40}'.format("Wildcard TXT record found for %s: " % d) + ", ".join(item), True)
-                    wc = True
+                    if r.rdtype == 16:  # TXT RECORD
+                        item = []
+                        for x in r.items:
+                            item.append(x.to_text())
+                        self.txt_wildcard += item
+                        self.log.warn('{:40}'.format("Wildcard TXT record found for %s: " % d) + ", ".join(item), True)
+                        wc = True
 
-                if r.rdtype == 28:  # AAAA RECORD
-                    item = []
-                    for x in r.items:
-                        item.append(x.to_text())
-                    self.aaaa_wildcard += item
-                    self.log.warn('{:40}'.format("Wildcard AAAA record found for %s: " % d) + ", ".join(item), True)
-                    wc = True
+                    if r.rdtype == 28:  # AAAA RECORD
+                        item = []
+                        for x in r.items:
+                            item.append(x.to_text())
+                        self.aaaa_wildcard += item
+                        self.log.warn('{:40}'.format("Wildcard AAAA record found for %s: " % d) + ", ".join(item), True)
+                        wc = True
 
-                if r.rdtype == 15:  # MX RECORD
-                    item = []
-                    for x in r.items:
-                        item.append(x.to_text())
-                    self.mx_wildcard += item
-                    self.log.warn('{:40}'.format("Wildcard MX record found for %s: " % d) + ", ".join(item), True)
-                    wc = True
-                if wc == True: return True
-            if not wc:
-                return False
+                    if r.rdtype == 15:  # MX RECORD
+                        item = []
+                        for x in r.items:
+                            item.append(x.to_text())
+                        self.mx_wildcard += item
+                        self.log.warn('{:40}'.format("Wildcard MX record found for %s: " % d) + ", ".join(item), True)
+                        wc = True
+                    if wc == True: return True
+                #if not wc:
+                #    return False
         except Exception as e:
             self.log.fatal(('Wildcard check on %s.' % domain_addr), False)
             print (e)
+        return False
 
     def execute_plugins(self, plugins):
         for name, value in self.args._get_kwargs():
@@ -187,7 +189,7 @@ class SubFuz():
                         subdomains = plugin.execute(self.domain, plugin_conf)
                         if subdomains:
                             for d in subdomains:
-                                self.new_targets(d)
+                                self.new_targets(d.lower())
                     except Exception as e:
                         self.log.fatal(str(e), True)
                             # TODO: domains causes output clutter that is wildcard related.
@@ -208,7 +210,7 @@ class SubFuz():
                 percentage = math.ceil(self.sl.n_scanned+0.0)/total*100
                 sys.stdout.write("Status: " + col.cyan + "%d/%d " %(self.sl.n_scanned, total) + col.end + "domains tested. "
                                  + col.brown + "%.2f%%" % percentage + col.end + " done. failed: " + col.red +"%d" %
-                                 len(self.sl.scan_failed) + col.end + " \r")
+                                 len([x for x in self.sl.scan_failed if x[1] == self.retry]) + col.end + " \r")
                 sys.stdout.flush()
             time.sleep(0.05)
         self.log.printer()
@@ -316,13 +318,12 @@ class SubFuz():
                             self.sl.items.append([d, item])
                             self.log.log_queue.append('{:40}'.format(d) + '{:8}'.format('MX') + '{:10}'.format(item.split(' ')[1].rstrip('.')))
                             self.log.csv_queue.append("%s,MX,%s" % (d, item.split(' ')[1].rstrip('.')))
-                        new = ['mail._domainkey', '_dmarc', 'default._domainkey']
-                        for n in new:
-                            if d == self.domain:
-                                self.append_target(n)
-                            else:
-                                self.append_target(n + '.' + d.replace(self.domain, '').strip('.'))
-
+                            new = ['mail._domainkey', '_dmarc', 'default._domainkey']
+                            for n in new:
+                                if d == self.domain:
+                                    self.append_target(n)
+                                else:
+                                    self.append_target(n + '.' + d.replace(self.domain, '').strip('.'))
         except Exception as e:
             self.log.fatal(('Parsing records for: %s with answer %s' % (query, ans)), False)
             print (e)
@@ -364,7 +365,7 @@ class SubFuz():
                 if self.record is 'PTR':
                     d = subdomain
                 else:
-                    d = (subdomain + u'.' + self.domain).lstrip('.')
+                    d = (subdomain + u'.' + self.domain).lower().lstrip('.')
                 try:
                     ans = lookup(d.encode('utf-8'), t, self.dns, self.protocol, self.timeout)
                     if ans:
@@ -381,9 +382,13 @@ class SubFuz():
                                 continue
                         else:
                             self.sl.scan_failed.append([subdomain, 1])
-                        self.sl.unscanned.append(subdomain)
+                        self.sl.unscanned.insert(0,subdomain)
                 except Exception as e:
-                    self.log.fatal(('Domain Query failed on %s.'  % d), False)
+                    try:
+                        self.log.fatal(('Domain Query failed on %s.'  % d), False)
+                    except:
+                        self.log.fatal(('Domain Query failed on %s. (HEX ENCODED)' % d.encode('hex')), False)
+                        # added to in an attempt to resolve a bug related to invalid UTF-8 characters
                     print (e)
 
 
