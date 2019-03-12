@@ -9,8 +9,8 @@ ARG_HELP    = 'hackertarget subdomains'
 handler = SIGINT_handler()
 signal.signal(signal.SIGINT, handler.signal_handler)
 
-class CRTError(Exception):
-   """Base class for crt.sh exceptions"""
+class HTError(Exception):
+   """Base class for hackertarget exceptions"""
    pass
 
 def execute(domain, config):
@@ -30,6 +30,6 @@ def execute(domain, config):
                     d.append(subdom[0])
                 return set(d)
         else:
-            raise CRTError('hackertarget plugin: Unexpected Error')
+            raise HTError('hackertarget plugin: Unexpected Error')
     except:
         raise
