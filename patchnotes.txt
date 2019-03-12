@@ -1,0 +1,10 @@
+SubFuz 2.0.7
+----------------------------
+- Remove upper/lower case domain duplicates from results
+- Changed fail counter to display only amount of failed hits after x-amount of retries specified by config, rather than each failed request
+- Exception added for invalid UTF-8 Characters causing thread to crash
+- Added exception for wildcard checks
+- Bux fixed related to MX wildcard parsing
+----------------------------
+SubFuz < 2.0.7
+- Ton of minor and major fixes, did not keep track of changes until now

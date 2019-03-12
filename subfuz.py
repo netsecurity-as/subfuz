@@ -12,6 +12,8 @@ banner = '''             ___     _____
       \/          \/                 \/\n
 '''
 
+VERSION = "2.0.7"
+
 (SF_FILE, SF_DIR) = env.setup_core_paths(os.path.realpath(__file__))
 PLUGINS_DIR     = os.path.join(SF_DIR, "plugins")
 CORE_DIR        = os.path.join(SF_DIR, "core")
@@ -47,9 +49,9 @@ def initialize():
 Example usage:
   python subfuz.py -d example.com -w domain_dictionary.txt -all
 
-SubFuz Version: 2.0.4
+SubFuz %s
 Author: Torstein Mauseth @ Netsecurity
-'''
+''' % VERSION
     parser = argparse.ArgumentParser(epilog=example_text, formatter_class=argparse.RawTextHelpFormatter)
     parser._action_groups.pop()
     required_args = parser.add_argument_group('required arguments')
@@ -62,6 +64,7 @@ Author: Torstein Mauseth @ Netsecurity
     optional_args.add_argument('-w', help='Specify fuzzing dictionary to use', dest='dictionary')
     optional_args.add_argument('-o', help='Write output to a file', dest='log_filename', required=False, default=False)
     optional_args.add_argument('-csv', help='Write output to a csv file. Use - for stdout', dest='csv_filename', required=False, default=False)
+    optional_args.add_argument('-deep', help='Specify fuzzing dictionary for deep subdomain testing', required=False, default=False)
     optional_args.add_argument('-dns', default=None, help='{:32}'.format('Override DNS server to query')+ '{:5}'.format('[ %s ]' % override))
     optional_args.add_argument('-protocol', default=protocol, help='{:32}'.format('Override DNS protocol') + '{:5}'.format('[ %s ]' % protocol))
     optional_args.add_argument('-record', default=record, help='{:32}'.format('Override DNS query record') + '{:5}'.format('[ %s ]' % protocol))
