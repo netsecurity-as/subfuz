@@ -1,4 +1,4 @@
-import json, requests, io
+import requests, io
 from core.env import SIGINT_handler
 import signal
 from core.logger import Output
