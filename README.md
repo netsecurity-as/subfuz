@@ -19,9 +19,9 @@ pip install -r requirements.txt
 ```
 $ python subfuz.py -h
 usage: subfuz.py [-h] [-d TARGET] [-l TARGET_LIST] [-w DICTIONARY]
-                 [-o LOG_FILENAME] [-csv CSV_FILENAME] [-dns DNS]
+                 [-o LOG_FILENAME] [-csv CSV_FILENAME] [-deep DEEP] [-dns DNS]
                  [-protocol PROTOCOL] [-record RECORD] [-p P] [-z Z] [-r R]
-                 [-t T] [-zone] [-ptr] [-quiet] [-all] [-virustotal]
+                 [-t T] [-zone] [-ptr] [-quiet] [-all]
 
 required arguments:
   -d TARGET           Specify domain to fuzz, or..
@@ -31,6 +31,7 @@ optional arguments:
   -w DICTIONARY       Specify fuzzing dictionary to use
   -o LOG_FILENAME     Write output to a file
   -csv CSV_FILENAME   Write output to a csv file. Use - for stdout
+  -deep DEEP          Specify fuzzing dictionary for deep subdomain testing
   -dns DNS            Override DNS server to query    [ None ]
   -protocol PROTOCOL  Override DNS protocol           [ None ]
   -record RECORD      Override DNS query record       [ None ]
@@ -41,6 +42,7 @@ optional arguments:
   -zone               Disable Zone Transfer testing
   -ptr                Disable PTR check on related domains on the current /24 network
   -quiet              Suppress terminal output
+
 
 plugins:
   -all                Enable all plugins
@@ -72,6 +74,8 @@ SubFuz is currently extended with the following plugins:
 | Plugin | README | Author |
 | ------ | ------ | ------ |
 | VirusTotal | [/plugins/virustotal/README.md](plugins/virustotal/README.md) | [Eplox](https://github.com/Eplox/) |
+| crt.sh | [/plugins/crtsh/README.md](plugins/crtsh/README.md) | [Eplox](https://github.com/Eplox/) |
+| Censys | [/plugins/censys/README.md](plugins/censys/README.md) | [Eplox](https://github.com/Eplox/) |
 
 ### Recommendations
 Grab the domain fuzzing lists from Daniel Miessler repository: https://github.com/danielmiessler/SecLists/tree/master/Discovery/DNS
