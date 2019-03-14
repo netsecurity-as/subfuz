@@ -31,6 +31,12 @@
             "uid": "",
             "secret": "",
             "max_page": 3
+        },
+        "hackertarget":{
+            "enable": true
+        },
+        "fsd": {
+            "enable": true
         }
     }
 }
