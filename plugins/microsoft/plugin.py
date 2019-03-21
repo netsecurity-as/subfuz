@@ -9,7 +9,6 @@ ARG_HELP    = 'Microsoft tenant domain lookup'
 handler = SIGINT_handler()
 signal.signal(signal.SIGINT, handler.signal_handler)
 
-
 def execute(**kwargs):
     if handler.SIGINT:
         Output().warn("Aborted plugin: %s" % NAME, False)
