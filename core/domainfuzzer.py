@@ -271,7 +271,7 @@ class SubFuz():
 
 
                 if r.rdtype == 5:  # CNAME RECORD
-                    d = r.name.to_text().rstrip('.').decode('utf-8').decode('idna')
+                    d = r.name.to_text().rstrip('.').decode('idna').encode('utf-8')
                     for x in r.items:
                         item = x.to_text()
                         if item in self.cname_wildcard:
@@ -294,7 +294,7 @@ class SubFuz():
                                 wildcard = True
 
                 if r.rdtype == 16:  # TXT RECORD
-                    d = r.name.to_text().rstrip('.').decode('utf-8').decode('idna')
+                    d = r.name.to_text().rstrip('.').decode('idna').encode('utf-8')
                     for x in r.items:
                         item = x.to_text()
                         if item in self.txt_wildcard:
@@ -306,7 +306,7 @@ class SubFuz():
                                 self.log.csv_queue.append("%s,TXT,%s" % (d, item))
 
                 if r.rdtype == 28:  # AAAA RECORD
-                    d = r.name.to_text().rstrip('.').decode('utf-8').decode('idna')
+                    d = r.name.to_text().rstrip('.').decode('idna').encode('utf-8')
                     for x in r.items:
                         item = x.to_text()
                         if item in self.aaaa_wildcard:
@@ -317,7 +317,7 @@ class SubFuz():
                             self.log.csv_queue.append("%s,AAAA,%s" % (d, item))
 
                 if r.rdtype == 15:  # MX RECORD
-                    d = r.name.to_text().rstrip('.').decode('utf-8').decode('idna')
+                    d = r.name.to_text().rstrip('.').decode('idna').encode('utf-8')
                     for x in r.items:
                         item = x.to_text()
                         if item in self.mx_wildcard:
@@ -331,7 +331,7 @@ class SubFuz():
                                 if d == self.domain:
                                     self.append_target(n)
                                 else:
-                                    self.append_target(n + '.' + d.replace(self.domain, '').strip('.'))
+                                    self.append_target(n + '.' + d.replace(self.domain, '').strip('.').decode('utf-8'))
         except Exception as e:
             self.log.fatal(('Parsing records for: %s with answer %s' % (query, ans)), False)
             print (e)
@@ -438,6 +438,7 @@ class SubFuz():
             # just to ensure everything is out
             self.log.printer()
             if not self.args.quiet: sys.stdout.write(' ' * 64 + '\n')
+
 
     def stats(self):
         if self.sl.ptr_scanned == 0:
