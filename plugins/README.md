@@ -13,8 +13,12 @@ NAME        = '<your unique plugin name>'
 ARG_HELP    = '<your plugin help text>'
 
 
-def execute(domain, plugin_config):
-    credentials = plugin_config['your_config']
+def execute(**kwargs):
+    domain = kwargs['domain']
+    config = kwargs['config']
+    subfuz = kwargs['subfuz']
+    
+    credentials = config['api-key']
 
     # Exit / end plugin with
     return ['domain.com', 'subdomain.domain2.com']
@@ -22,3 +26,4 @@ def execute(domain, plugin_config):
     
 ```
 See the plugin [virustotal](virustotal/plugin.py) as sample
+or [microsoft](microsoft/plugin.py) for interaction with subfuz core

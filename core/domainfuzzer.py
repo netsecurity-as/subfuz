@@ -55,6 +55,11 @@ class SubFuz():
         # Mutex lock required to avoid issues with multiple threads working on the same object.
         self.mutex = Lock()
 
+        self.f1 = '{:50}'
+        self.f2 = '{:8}'
+        self.f3 = '{:10}'
+        self.f4 = '{:46}'
+
 
     def dns_server(self):
         ns_record = lookup(self.domain, 'NS', self.config['config']['dns_fallback'], self.protocol, self.timeout)
@@ -77,14 +82,14 @@ class SubFuz():
                 if self.zone:
                     try:
                         z = dns.zone.from_xfr(dns.query.xfr(dns_server, self.domain, timeout=10, lifetime=10))
-                        self.log.good('{:40}'.format(dns_server_name) + '{:15}'.format(dns_server) + ' - Zone Transfer allowed.', True)
+                        self.log.good(self.f4.format(dns_server_name) + '{:15}'.format(dns_server) + ' - Zone Transfer allowed.', True)
                         names = z.nodes.keys()
                         for n in names:
                             self.log.normal(z[n].to_text(n), True)
                     except:
-                        self.log.warn('{:40}'.format(dns_server_name) + '{:15}'.format(dns_server) + ' - Zone Transfer not allowed.', True)
+                        self.log.warn(self.f4.format(dns_server_name) + '{:15}'.format(dns_server) + ' - Zone Transfer not allowed.', True)
                 else:
-                    self.log.neutral('{:40}'.format(dns_server_name) + '{:15}'.format(dns_server), True)
+                    self.log.neutral(self.f4.format(dns_server_name) + '{:15}'.format(dns_server), True)
                 # Testing for open TCP and UDP ports for DNS servers, and what type of records are permitted.
                 # TCP
                 tans = lookup(self.domain, 'ANY', dns_server, 'TCP', self.timeout)
@@ -124,6 +129,7 @@ class SubFuz():
         if override_protocol: self.protocol = override_protocol
         self.log.neutral('Using nameserver %s, query type %s over %s' % (self.dns, self.record, self.protocol), True)
 
+
     def check_wildcard(self, domain_addr):
         try:
             wildcard = ''.join(random.choice(string.ascii_lowercase) for _ in range(15))
@@ -137,7 +143,7 @@ class SubFuz():
                         for x in r.items:
                             item.append(x.to_text())
                         self.a_wildcard += item
-                        self.log.warn('{:40}'.format("Wildcard A record found for %s: " % d) + ", ".join(item), True)
+                        self.log.warn(self.f1.format("Wildcard A record found for %s: " % d) + ", ".join(item), True)
                         wc = True
 
                     if r.rdtype == 5:  # CNAME RECORD
@@ -145,7 +151,7 @@ class SubFuz():
                         for x in r.items:
                             item.append(x.to_text())
                         self.cname_wildcard += item
-                        self.log.warn('{:40}'.format("Wildcard CNAME record found for %s: " % d) + ", ".join(item), True)
+                        self.log.warn(self.f1.format("Wildcard CNAME record found for %s: " % d) + ", ".join(item), True)
                         wc = True
 
                     if r.rdtype == 16:  # TXT RECORD
@@ -153,7 +159,7 @@ class SubFuz():
                         for x in r.items:
                             item.append(x.to_text())
                         self.txt_wildcard += item
-                        self.log.warn('{:40}'.format("Wildcard TXT record found for %s: " % d) + ", ".join(item), True)
+                        self.log.warn(self.f1.format("Wildcard TXT record found for %s: " % d) + ", ".join(item), True)
                         wc = True
 
                     if r.rdtype == 28:  # AAAA RECORD
@@ -161,7 +167,7 @@ class SubFuz():
                         for x in r.items:
                             item.append(x.to_text())
                         self.aaaa_wildcard += item
-                        self.log.warn('{:40}'.format("Wildcard AAAA record found for %s: " % d) + ", ".join(item), True)
+                        self.log.warn(self.f1.format("Wildcard AAAA record found for %s: " % d) + ", ".join(item), True)
                         wc = True
 
                     if r.rdtype == 15:  # MX RECORD
@@ -169,7 +175,7 @@ class SubFuz():
                         for x in r.items:
                             item.append(x.to_text())
                         self.mx_wildcard += item
-                        self.log.warn('{:40}'.format("Wildcard MX record found for %s: " % d) + ", ".join(item), True)
+                        self.log.warn(self.f1.format("Wildcard MX record found for %s: " % d) + ", ".join(item), True)
                         wc = True
                     if wc == True: return True
                 #if not wc:
@@ -179,14 +185,15 @@ class SubFuz():
             print (e)
         return False
 
-    def execute_plugins(self, plugins):
+
+    def execute_plugins(self, plugins, self_class):
         for name, value in self.args._get_kwargs():
             for plugin in plugins:
                 if (value is True or self.args.all) and name is plugin.NAME:
                     try:
                         plugin_conf = self.config['plugins'][plugin.NAME]
                         self.log.good('Executing plugin: %s' % name, True)
-                        subdomains = plugin.execute(self.domain, plugin_conf)
+                        subdomains = plugin.execute(domain = self.domain, config = plugin_conf, subfuz = self_class)
                         if subdomains:
                             for d in subdomains:
                                 self.new_targets(d.lower())
@@ -196,7 +203,7 @@ class SubFuz():
 
 
     def scan(self):
-        self.log.normal('\n\n{:40}'.format('Domain Name') + '{:8}'.format('Record') + 'Value', True)
+        self.log.normal('\n\n' + self.f1.format('Domain Name') + self.f2.format('Record') + 'Value', True)
         self.log.normal('------------------------------------------------------', True)
         threads = []
         for i in range(self.threads):
@@ -226,6 +233,7 @@ class SubFuz():
         except Exception as e:
             self.log.fatal(('Inserting target %s.' % subdomain), False)
             print e
+
 
     def new_targets(self, new_domain):
         if not self.domain == new_domain.rstrip('.') and self.domain in new_domain:
@@ -258,7 +266,7 @@ class SubFuz():
                             wildcard = True
                         else:
                             self.sl.items.append([d, item])
-                            self.log.log_queue.append('{:40}'.format(d) + '{:8}'.format('A') + '{:10}'.format(item))
+                            self.log.log_queue.append(self.f1.format(d) + self.f2.format('A') + self.f3.format(item))
                             self.log.csv_queue.append("%s,A,%s" % (d, item))
 
 
@@ -270,7 +278,7 @@ class SubFuz():
                             wildcard = True
                         else:
                             self.sl.items.append([d, item])
-                            self.log.log_queue.append('{:40}'.format(d) + '{:8}'.format('CNAME') + '{:10}'.format(item.rstrip('.')))
+                            self.log.log_queue.append(self.f1.format(d) + self.f2.format('CNAME') + self.f3.format(item.rstrip('.')))
                             self.log.csv_queue.append("%s,CNAME,%s" % (d, item.rstrip('.')))
 
                 if r.rdtype == 12:  # PTR RECORD
@@ -280,7 +288,7 @@ class SubFuz():
                         if self.domain.split('.')[-2] in item:
                             if not [y for y in self.sl.items if item.rstrip('.') in y if query in y[1]]:
                                 self.sl.items.append([item, query])
-                                self.log.log_queue.append('{:40}'.format(item.rstrip('.')) + '{:8}'.format('PTR') + '{:10}'.format(query))
+                                self.log.log_queue.append(self.f1.format(item.rstrip('.')) + self.f2.format('PTR') + self.f3.format(query))
                                 self.log.csv_queue.append("%s,PTR,%s" % (item.rstrip('.'), query))
                             else:
                                 wildcard = True
@@ -294,7 +302,7 @@ class SubFuz():
                         else:
                             if [t for t in self.config['config']['txt_record_search'] if t in item]:
                                 self.sl.items.append([d, item])
-                                self.log.log_queue.append('{:40}'.format(d) + '{:8}'.format('TXT') + '{:10}'.format(item))
+                                self.log.log_queue.append(self.f1.format(d) + self.f2.format('TXT') + self.f3.format(item))
                                 self.log.csv_queue.append("%s,TXT,%s" % (d, item))
 
                 if r.rdtype == 28:  # AAAA RECORD
@@ -305,7 +313,7 @@ class SubFuz():
                             wildcard = True
                         else:
                             self.sl.items.append([d, item])
-                            self.log.log_queue.append('{:40}'.format(d) + '{:8}'.format('AAAA') + '{:10}'.format(item))
+                            self.log.log_queue.append(self.f1.format(d) + self.f2.format('AAAA') + self.f3.format(item))
                             self.log.csv_queue.append("%s,AAAA,%s" % (d, item))
 
                 if r.rdtype == 15:  # MX RECORD
@@ -316,7 +324,7 @@ class SubFuz():
                             wildcard = True
                         else:
                             self.sl.items.append([d, item])
-                            self.log.log_queue.append('{:40}'.format(d) + '{:8}'.format('MX') + '{:10}'.format(item.split(' ')[1].rstrip('.')))
+                            self.log.log_queue.append(self.f1.format(d) + self.f2.format('MX') + self.f3.format(item.split(' ')[1].rstrip('.')))
                             self.log.csv_queue.append("%s,MX,%s" % (d, item.split(' ')[1].rstrip('.')))
                             new = ['mail._domainkey', '_dmarc', 'default._domainkey']
                             for n in new:
@@ -328,8 +336,6 @@ class SubFuz():
             self.log.fatal(('Parsing records for: %s with answer %s' % (query, ans)), False)
             print (e)
         return wildcard
-
-
 
 
     def scan_worker(self):
@@ -387,8 +393,7 @@ class SubFuz():
                     try:
                         self.log.fatal(('Domain Query failed on %s.'  % d), False)
                     except:
-                        self.log.fatal(('Domain Query failed on %s. (HEX ENCODED)' % d.encode('hex')), False)
-                        # added to in an attempt to resolve a bug related to invalid UTF-8 characters
+                        pass
                     print (e)
 
 
@@ -446,7 +451,6 @@ class SubFuz():
         else:
             self.log.normal("No subnets was discovered.", True)
         if not self.args.quiet: print ("\nDONE")
-
 
 
     def close(self):

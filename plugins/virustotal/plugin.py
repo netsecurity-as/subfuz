@@ -13,7 +13,7 @@ class VTError(Exception):
    """Base class for Virus Total exceptions"""
    pass
 
-def execute(domain, credentials):
+def execute(domain, credentials, **kwargs):
     if handler.SIGINT:
         Output().warn("Aborted plugin: %s" % NAME, False)
         return None
