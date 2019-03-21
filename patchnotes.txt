@@ -4,6 +4,7 @@ SubFuz 2.0.8 03.21.2019
 - Minor adjustment to current plugins to allow new functionality
 - Removed a word in the subdomain_megalist.txt which caused errors for subfuz in Windows.
   line 22811: secci'\udaf4'econd
+- utf-8 bugfix related to mail enums
 ----------------------------
 SubFuz 2.0.7 03.07.2019
 - Remove upper/lower case domain duplicates from results
