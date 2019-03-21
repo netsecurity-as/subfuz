@@ -78,6 +78,7 @@ SubFuz is currently extended with the following plugins:
 | Censys | [/plugins/censys/README.md](plugins/censys/README.md) | [Eplox](https://github.com/Eplox/) |
 | fsd | findsubdomains.com | [Vegar](https://github.com/VegarLH)
 | hackertarget | hackertarget.com | [Vegar](https://github.com/VegarLH)
+| microsoft | [/plugins/microsoft/README.md](plugins/microsoft/README.md) | [Eplox](https://github.com/Eplox/) |
 
 ### Recommendations
 Grab the domain fuzzing lists from Daniel Miessler repository: https://github.com/danielmiessler/SecLists/tree/master/Discovery/DNS
