@@ -1,5 +1,12 @@
-SubFuz 2.0.7
+
 ----------------------------
+SubFuz 2.0.8 03.21.2019
+- Now passing the subfuz class into plugins, allowing plugins to interact with core functionality
+- Minor adjustment to current plugins to allow new functionality
+- Removed a word in the subdomain_megalist.txt which caused errors for subfuz in Windows.
+  line 22811: secci'\udaf4'econd
+----------------------------
+SubFuz 2.0.7 03.07.2019
 - Remove upper/lower case domain duplicates from results
 - Changed fail counter to display only amount of failed hits after x-amount of retries specified by config, rather than each failed request
 - Exception added for invalid UTF-8 Characters causing thread to crash

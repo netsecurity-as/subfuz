@@ -115,7 +115,7 @@ if __name__ == "__main__":
         sf = SubFuz(domain, config, args, PLUGINS_DIR, CORE_DIR)
         sf.dns_server()
         sf.check_wildcard(sf.domain)
-        sf.execute_plugins(plugins)
+        sf.execute_plugins(plugins, sf)
         sf.scan()
         sf.subnets()
         sf.ptr_scan()

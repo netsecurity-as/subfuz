@@ -13,7 +13,7 @@ class HTError(Exception):
    """Base class for hackertarget exceptions"""
    pass
 
-def execute(domain, config):
+def execute(domain, **kwargs):
     if handler.SIGINT:
         Output().warn("Aborted plugin: %s" % NAME, False)
         return None

@@ -13,7 +13,7 @@ class CENSYSError(Exception):
    """Base class for censys exceptions"""
    pass
 
-def execute(domain, config):
+def execute(domain, config, **kwargs):
     if handler.SIGINT:
         Output().warn("Aborted plugin: %s" % NAME, False)
         return None
