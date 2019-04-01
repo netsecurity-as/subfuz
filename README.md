@@ -73,12 +73,13 @@ SubFuz is currently extended with the following plugins:
 
 | Plugin | README | Author |
 | ------ | ------ | ------ |
-| VirusTotal | [/plugins/virustotal/README.md](plugins/virustotal/README.md) | [Eplox](https://github.com/Eplox/) |
-| crt.sh | [/plugins/crtsh/README.md](plugins/crtsh/README.md) | [Eplox](https://github.com/Eplox/) |
-| Censys | [/plugins/censys/README.md](plugins/censys/README.md) | [Eplox](https://github.com/Eplox/) |
+| virustotal | [/plugins/virustotal/README.md](plugins/virustotal/README.md) | [Eplox](https://github.com/Eplox/) |
+| crtsh | [/plugins/crtsh/README.md](plugins/crtsh/README.md) | [Eplox](https://github.com/Eplox/) |
+| censys | [/plugins/censys/README.md](plugins/censys/README.md) | [Eplox](https://github.com/Eplox/) |
 | fsd | findsubdomains.com | [Vegar](https://github.com/VegarLH)
 | hackertarget | hackertarget.com | [Vegar](https://github.com/VegarLH)
 | microsoft | [/plugins/microsoft/README.md](plugins/microsoft/README.md) | [Eplox](https://github.com/Eplox/) |
+| citrix | [/plugins/citrix/README.md](plugins/citrix/README.md) | TBA |
 
 ### Recommendations
 Grab the domain fuzzing lists from Daniel Miessler repository: https://github.com/danielmiessler/SecLists/tree/master/Discovery/DNS

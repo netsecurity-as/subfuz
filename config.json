@@ -40,6 +40,9 @@
         },
         "microsoft": {
             "enable": true
+        },
+        "citrix": {
+            "enable": true
         }
     }
 }
