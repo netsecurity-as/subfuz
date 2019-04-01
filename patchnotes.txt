@@ -1,4 +1,8 @@
 ----------------------------
+SubFuz 2.0.9 01.04.2019
+- Fixed issue in virustotal plugin related to previous core functionality changes
+- Fixed error which occurs in a scenario where you feed subfuz with a file containing empty line under "-l"
+----------------------------
 SubFuz 2.0.8 03.21.2019
 - Now passing the subfuz class into plugins, allowing plugins to interact with core functionality
 - Minor adjustment to current plugins to allow new functionality

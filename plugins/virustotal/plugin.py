@@ -13,12 +13,12 @@ class VTError(Exception):
    """Base class for Virus Total exceptions"""
    pass
 
-def execute(domain, credentials, **kwargs):
+def execute(domain, config, **kwargs):
     if handler.SIGINT:
         Output().warn("Aborted plugin: %s" % NAME, False)
         return None
     try:
-        query = "https://www.virustotal.com/vtapi/v2/domain/report?apikey=%s&domain=%s" % (credentials['api-key'], domain.rstrip())
+        query = "https://www.virustotal.com/vtapi/v2/domain/report?apikey=%s&domain=%s" % (config['api-key'], domain.rstrip())
         r = requests.get(query)
         if r.status_code == 200:
             data = json.loads(r.content)

@@ -12,7 +12,7 @@ banner = '''             ___     _____
       \/          \/                 \/\n
 '''
 
-VERSION = "2.0.8"
+VERSION = "2.0.9"
 
 (SF_FILE, SF_DIR) = env.setup_core_paths(os.path.realpath(__file__))
 PLUGINS_DIR     = os.path.join(SF_DIR, "plugins")
@@ -104,6 +104,7 @@ if __name__ == "__main__":
     if args.target_list:
         try:
             targets =  map(unicode.strip, io.open(args.target_list, encoding='utf-8', mode='r').readlines())
+            targets = filter(None, targets)
         except:
             print ("Could not open output file: %s" % args.target_list)
             sys.exit()
