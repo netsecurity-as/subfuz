@@ -4,7 +4,7 @@ https://www.circl.lu/services/passive-dns
 ## Config
 ```
         "cirlc":{
-            "enable": true,
+            "enable": false,
 	    "user": "<user>",
 	    "pass": "<password>"
         },
