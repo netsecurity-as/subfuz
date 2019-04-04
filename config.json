@@ -43,6 +43,14 @@
         },
         "citrix": {
             "enable": true
-        }
+        },
+	"aws": {
+	    "enable": true
+	},
+	"circl": {
+	    "enable": true,
+	    "user": "<user>",
+	    "pass": "<password>"
+	}
     }
 }
