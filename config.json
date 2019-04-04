@@ -48,7 +48,7 @@
 	    "enable": true
 	},
 	"circl": {
-	    "enable": true,
+	    "enable": false,
 	    "user": "<user>",
 	    "pass": "<password>"
 	}

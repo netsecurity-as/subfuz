@@ -29,6 +29,6 @@ def execute(**kwargs):
             Output().good('Bucket %s is open' % bucket,False)
             ans = lookup(bucket.encode('utf-8'), 'ANY', '8.8.8.8', 'UDP', subfuz.timeout)
         if ans:
-            subfuz.parse_record(ans, bucket)
+           subfuz.parse_record(ans, bucket)
     except:
         raise
