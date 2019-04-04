@@ -12,7 +12,7 @@ handler = SIGINT_handler()
 signal.signal(signal.SIGINT, handler.signal_handler)
 
 class CError(Exception):
-   """Base class for Virus Total exceptions"""
+   """Base class for Circl.lu exceptions"""
    pass
 
 def execute(**kwargs):
