@@ -45,7 +45,7 @@
             "enable": true
         },
         "aws": {
-	        "enable": true
+            "enable": true
         },
         "circl": {
             "enable": false,
