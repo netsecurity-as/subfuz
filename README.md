@@ -79,7 +79,9 @@ SubFuz is currently extended with the following plugins:
 | fsd | findsubdomains.com | [Vegar](https://github.com/VegarLH)
 | hackertarget | hackertarget.com | [Vegar](https://github.com/VegarLH)
 | microsoft | [/plugins/microsoft/README.md](plugins/microsoft/README.md) | [Eplox](https://github.com/Eplox/) |
-| citrix | [/plugins/citrix/README.md](plugins/citrix/README.md) | TBA |
+| citrix | [/plugins/citrix/README.md](plugins/citrix/README.md) | [hahnium](https://github.com/hahnium) |
+| aws | [/plugins/aws/README.md](plugins/aws/README.md) | [hahnium](https://github.com/hahnium) |
+| circl | [/plugins/circl/README.md](plugins/circl/README.md) | [hahnium](https://github.com/hahnium) |
 
 ### Recommendations
 Grab the domain fuzzing lists from Daniel Miessler repository: https://github.com/danielmiessler/SecLists/tree/master/Discovery/DNS
