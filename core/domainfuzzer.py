@@ -77,7 +77,11 @@ class SubFuz():
             for y in nameservers[0]:
                 dns_server_name = y.target.to_text()
                 # get DNS server IP
-                dns_server = lookup(dns_server_name,'A', self.config['config']['dns_fallback'], self.protocol, self.timeout)[0].items[0].to_text()
+                try:
+                    dns_server = lookup(dns_server_name,'A', self.config['config']['dns_fallback'], self.protocol, self.timeout)[0].items[0].to_text()
+                except:
+                    self.log.fatal(self.f4.format(dns_server_name) + '{:15}'.format('Unabel to resolv DNS server - Likely due to unstable network connection'), False)
+                    sys.exit()
                 # Zone transfer
                 if self.zone:
                     try:
