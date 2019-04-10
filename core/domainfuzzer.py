@@ -330,7 +330,7 @@ class SubFuz():
                             self.sl.items.append([d, item])
                             self.log.log_queue.append(self.f1.format(d) + self.f2.format('MX') + self.f3.format(item.split(' ')[1].rstrip('.')))
                             self.log.csv_queue.append("%s,MX,%s" % (d, item.split(' ')[1].rstrip('.')))
-                            new = ['mail._domainkey', '_dmarc', 'default._domainkey']
+                            new = ['mail._domainkey', '_dmarc', 'default._domainkey', 'selector1._domainkey', 'selector2._domainkey']
                             for n in new:
                                 if d == self.domain:
                                     self.append_target(n)
