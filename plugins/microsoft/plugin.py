@@ -22,7 +22,9 @@ def execute(**kwargs):
                       domain[-2] + '-myfiles.sharepoint.com',
                       domain[-2] + '-files.sharepoint.com',
                       domain[-2] + '.onmicrosoft.com',
-                      '%s-%s.mail.protection.outlook.com' % (domain[-2], domain[-1])]
+                      '%s-%s.mail.protection.outlook.com' % (domain[-2], domain[-1]),
+                      'selector1-%s-%s._domainkey.%s.onmicrosoft.com' % (domain[-2], domain[-1], domain[-2]),
+                      'selector2-%s-%s._domainkey.%s.onmicrosoft.com' % (domain[-2], domain[-1], domain[-2])]
         for ms in ms_targets:
             ans = lookup(ms.encode('utf-8'), 'ANY', '8.8.8.8', 'UDP', subfuz.timeout)
             if ans:
