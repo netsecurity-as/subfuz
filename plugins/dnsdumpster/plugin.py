@@ -1,7 +1,6 @@
 from core.env import SIGINT_handler
 import signal
 from core.logger import Output
-from core.dnslookup import lookup
 import requests
 from BeautifulSoup import BeautifulSoup
 
