@@ -82,6 +82,7 @@ SubFuz is currently extended with the following plugins:
 | citrix | [/plugins/citrix/README.md](plugins/citrix/README.md) | [hahnium](https://github.com/hahnium) |
 | aws | [/plugins/aws/README.md](plugins/aws/README.md) | [hahnium](https://github.com/hahnium) |
 | circl | [/plugins/circl/README.md](plugins/circl/README.md) | [hahnium](https://github.com/hahnium) |
+| dnsdumpster | [/plugins/dnsdumpster/README.md](plugins/dnsdumpster/README.md) | [hahnium](https://github.com/hahnium) |
 
 ### Recommendations
 Grab the domain fuzzing lists from Daniel Miessler repository: https://github.com/danielmiessler/SecLists/tree/master/Discovery/DNS
