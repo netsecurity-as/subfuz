@@ -51,6 +51,9 @@
             "enable": false,
             "user": "<user>",
             "pass": "<password>"
+        },
+        "dnsdumpster": {
+            "enable": true
         }
     }
 }
