@@ -12,7 +12,7 @@ banner = '''             ___     _____
       \/          \/                 \/\n
 '''
 
-VERSION = "2.0.9"
+VERSION = "2.0.10"
 
 (SF_FILE, SF_DIR) = env.setup_core_paths(os.path.realpath(__file__))
 PLUGINS_DIR     = os.path.join(SF_DIR, "plugins")

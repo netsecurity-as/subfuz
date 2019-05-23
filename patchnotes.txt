@@ -1,4 +1,8 @@
 ----------------------------
+SubFuz 2.0.10 05.23.2019
+- Changing default preferred lookup to TCP
+- Fixed bug related to failed lookups and lookup counter
+----------------------------
 SubFuz 2.0.9 01.04.2019
 - Fixed issue in virustotal plugin related to previous core functionality changes
 - Fixed error which occurs in a scenario where you feed subfuz with a file containing empty line under "-l"

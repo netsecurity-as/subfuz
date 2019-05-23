@@ -116,14 +116,14 @@ class SubFuz():
                 b = [i for i in dns_servers if i[0] == 'TCP' and i[2] == 'ANY']
                 c = [i for i in dns_servers if i[0] == 'UDP' and i[2] == 'A']
                 d = [i for i in dns_servers if i[0] == 'TCP' and i[2] == 'A']
-                if a:  # ANY + UDP
-                    self.dns, self.protocol, self.record = a[0][1], a[0][0], a[0][2]
-                elif b:  # ANY + TCP
+                if b:  # ANY + TCP
                     self.dns, self.protocol, self.record= b[0][1], b[0][0], b[0][2]
-                elif c:  # A + UDP
-                    self.dns, self.protocol, self.record = c[0][1], c[0][0], c[0][2]
+                elif a:  # ANY + UDP
+                    self.dns, self.protocol, self.record = a[0][1], a[0][0], a[0][2]
                 elif d:  # A + TCP
                     self.dns, self.protocol, self.record = d[0][1], d[0][0], d[0][2]
+                elif c:  # A + UDP
+                    self.dns, self.protocol, self.record = c[0][1], c[0][0], c[0][2]
 
         override_dns = self.args.dns
         override_record = self.args.record
@@ -350,14 +350,12 @@ class SubFuz():
             try:
                 if self.record is 'PTR':
                     tests = ['PTR']
-                    self.sl.ptr_scanned += 1
                     subdomain = self.sl.ptr_unscanned_ip.pop(0)
+                    self.sl.ptr_scanned += 1
                 else:
                     if self.args.record: tests = [self.record]
                     elif self.record is 'A': tests = ['A', 'TXT', 'MX']
                     else: tests = ['ANY']
-                    self.sl.n_scanned += 1
-                    self.sl.n_unscanned -= 1
                     subdomain = self.sl.unscanned.pop(0)
             except:
                 if len(self.sl.unscanned) is 0:
@@ -393,6 +391,9 @@ class SubFuz():
                         else:
                             self.sl.scan_failed.append([subdomain, 1])
                         self.sl.unscanned.insert(0,subdomain)
+                    if ans != False and self.record is not 'PTR':
+                        self.sl.n_scanned += 1
+                        self.sl.n_unscanned -= 1
                 except Exception as e:
                     try:
                         self.log.fatal(('Domain Query failed on %s.'  % d), False)
