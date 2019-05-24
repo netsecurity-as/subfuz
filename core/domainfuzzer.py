@@ -70,6 +70,9 @@ class SubFuz():
                 ns_record = lookup(".".join(self.domain.split('.')[-2:]), 'NS', self.config['config']['dns_fallback'], self.protocol, self.timeout)
                 # TODO very ugly way of doing it, https://publicsuffix.org/list/public_suffix_list.dat is on the to-do list
                 # currently doesn't handle target domain inputs like subdomain.domain.co.uk or similar domains very well yet.
+                if not ns_record:  # Exit early if ns_record is not found.
+                    self.log.fatal('Unabel to lookup NS server', False)
+                    sys.exit()
             nameservers = [x for x in ns_record if x.rdtype == 2]
             if nameservers:
                 self.log.normal('Name Servers:', True)
