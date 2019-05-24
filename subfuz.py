@@ -75,6 +75,7 @@ Author: Torstein Mauseth @ Netsecurity
     optional_args.add_argument('-zone', action='store_false',  help="Disable Zone Transfer testing")
     optional_args.add_argument('-ptr', action='store_false',  help="Disable PTR check on related domains on the current /24 network")
     optional_args.add_argument('-quiet', action='store_true', help="Suppress terminal output")
+    optional_args.add_argument('-verbose', action='store_true', help="Verbose output")
 
     # Load plugins as optional arguments
     plugin_args.add_argument('-all', action='store_true', help='Enable all plugins')

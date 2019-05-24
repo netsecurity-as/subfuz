@@ -34,11 +34,13 @@ class col:
         end = ''
 
 class Output():
-    def __init__(self, log_filename=False, csv_filename=False, quiet=False):
+    def __init__(self, log_filename=False, csv_filename=False, error_filename=False, quiet=False):
         self.log_queue = []
         self.csv_queue = []
+        self.error_queue = []
         self.logfile = False
         self.csvfile = False
+        self.errorfile = False
         self.quiet = quiet
         if log_filename:
             try:
@@ -55,16 +57,28 @@ class Output():
             except:
                 self.fatal("Could not open output file: %s" % csv_filename, False)
                 sys.exit(1)
+        if error_filename:
+            try:
+                    self.errorfile = open(error_filename, "a+")
+            except:
+                self.fatal("Could not open output file: %s" % error_filename, False)
+                sys.exit(1)
 
     def printer(self):
         while self.log_queue:
             self.normal(self.log_queue.pop(0), True)
         while self.csv_queue:
             self.csv(self.csv_queue.pop(0))
+        while self.error_queue:
+            self.error(self.error_queue.pop(0))
 
     def csv(self, message):
         if self.csvfile:
             self.csvfile.write(message + '\n')
+
+    def error(self, message):
+        if self.errorfile:
+            self.errorfile.write(message + '\n')
 
     def normal(self, message, log):
         if not self.quiet: print(message)

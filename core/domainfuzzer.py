@@ -33,7 +33,7 @@ class SubFuz():
     def __init__(self, domain, config, args, PLUGINS_DIR, CORE_DIR):
         self.handler = SIGINT_handler()
         signal.signal(signal.SIGINT, self.handler.signal_handler)
-        self.log = Output(args.log_filename, args.csv_filename, args.quiet)
+        self.log = Output(args.log_filename, args.csv_filename, config['config']['error_file'], args.quiet)
         self.domain = domain.decode('utf-8').encode('idna')
         self.throttle = args.z / 1000.0
         self.threads = args.t
@@ -92,7 +92,7 @@ class SubFuz():
                 self.log.warn('No Name Servers found for %s' % self.domain, True)
                 sys.exit()
         else:
-            dns_servers.append([self.args.dns, 'N/A'])
+            dns_servers.append([self.args.dns, self.args.dns])
         # Zone transfer
         for dns_server in dns_servers:
             if self.zone:
@@ -402,6 +402,8 @@ class SubFuz():
             # else, add domain to "scanned" list.
             if subdomain in self.sl.scanned:
                 continue
+            else:
+                self.sl.scanned.append(subdomain)
             for t in tests:
                 if self.record is 'PTR':
                     d = subdomain
@@ -421,15 +423,18 @@ class SubFuz():
                             self.sl.scan_failed[z][1] += 1
                             if hit[0][1] > self.retry:
                                 self.sl.failcounter += 1
+                                if self.args.verbose:
+                                    self.log.status('Failed lookup on %s' % d + ' ' * 20, False)
+                                self.log.error_queue.append('Failed lookup on %s' % d )
                                 continue
                         else:
                             self.sl.scan_failed.append([subdomain, 1])
+                        self.sl.scanned.remove(subdomain)
                         self.sl.unscanned.insert(0,subdomain)
                     if ans != False and self.record is not 'PTR' and ((t == 'ANY' or t == 'A') or t == self.args.record):
                         # basically don't count queries that's TXT or MX if querying a server doesn't respond to ANY
                         self.sl.n_scanned += 1
                         self.sl.n_unscanned -= 1
-                        self.sl.scanned.append(subdomain)
                 except Exception as e:
                     try:
                         self.log.fatal(('Domain Query failed on %s.'  % d), False)
