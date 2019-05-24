@@ -45,6 +45,7 @@ class SubFuz():
         else: self.dns = config['config']['dns_fallback']
         if args.protocol: self.protocol = args.protocol
         else: self.protocol = config['config']['dns_fallback_protocol']
+        self.protocol = self.protocol.upper()
         if args.record: self.record = args.record
         else: self.record = config['config']['dns_fallback_record']
         self.args = args
