@@ -302,7 +302,7 @@ class SubFuz():
                             wildcard = True
                         else:
                             self.sl.items.append([d, item])
-                            self.log.log_queue.append(self.f1.format(d) + self.f2.format('A') + self.f3.format(item))
+                            self.log.log_queue.append(self.f1.format(d +' ') + self.f2.format('A') + self.f3.format(item))
                             self.log.csv_queue.append("%s,A,%s" % (d, item))
 
 
@@ -314,7 +314,7 @@ class SubFuz():
                             wildcard = True
                         else:
                             self.sl.items.append([d, item])
-                            self.log.log_queue.append(self.f1.format(d) + self.f2.format('CNAME') + self.f3.format(item.rstrip('.')))
+                            self.log.log_queue.append(self.f1.format(d +' ') + self.f2.format('CNAME') + self.f3.format(item.rstrip('.')))
                             self.log.csv_queue.append("%s,CNAME,%s" % (d, item.rstrip('.')))
 
                 if r.rdtype == 12:  # PTR RECORD
@@ -324,7 +324,7 @@ class SubFuz():
                         if self.domain.split('.')[-2] in item:
                             if not [y for y in self.sl.items if item.rstrip('.') in y if query in y[1]]:
                                 self.sl.items.append([item, query])
-                                self.log.log_queue.append(self.f1.format(item.rstrip('.')) + self.f2.format('PTR') + self.f3.format(query))
+                                self.log.log_queue.append(self.f1.format(item.rstrip('.') +' ') + self.f2.format('PTR') + self.f3.format(query))
                                 self.log.csv_queue.append("%s,PTR,%s" % (item.rstrip('.'), query))
                             else:
                                 wildcard = True
@@ -338,7 +338,7 @@ class SubFuz():
                         else:
                             if [t for t in self.config['config']['txt_record_search'] if t in item]:
                                 self.sl.items.append([d, item])
-                                self.log.log_queue.append(self.f1.format(d) + self.f2.format('TXT') + self.f3.format(item))
+                                self.log.log_queue.append(self.f1.format(d +' ') + self.f2.format('TXT') + self.f3.format(item))
                                 self.log.csv_queue.append("%s,TXT,%s" % (d, item))
 
                 if r.rdtype == 28:  # AAAA RECORD
@@ -349,7 +349,7 @@ class SubFuz():
                             wildcard = True
                         else:
                             self.sl.items.append([d, item])
-                            self.log.log_queue.append(self.f1.format(d) + self.f2.format('AAAA') + self.f3.format(item))
+                            self.log.log_queue.append(self.f1.format(d +' ') + self.f2.format('AAAA') + self.f3.format(item))
                             self.log.csv_queue.append("%s,AAAA,%s" % (d, item))
 
                 if r.rdtype == 15:  # MX RECORD
@@ -360,7 +360,7 @@ class SubFuz():
                             wildcard = True
                         else:
                             self.sl.items.append([d, item])
-                            self.log.log_queue.append(self.f1.format(d) + self.f2.format('MX') + self.f3.format(item.split(' ')[1].rstrip('.')))
+                            self.log.log_queue.append(self.f1.format(d +' ') + self.f2.format('MX') + self.f3.format(item.split(' ')[1].rstrip('.')))
                             self.log.csv_queue.append("%s,MX,%s" % (d, item.split(' ')[1].rstrip('.')))
                             new = ['mail._domainkey', '_dmarc', 'default._domainkey', 'selector1._domainkey', 'selector2._domainkey']
                             for n in new:
@@ -401,8 +401,6 @@ class SubFuz():
             # else, add domain to "scanned" list.
             if subdomain in self.sl.scanned:
                 continue
-            else:
-                self.sl.scanned.append(subdomain)
             for t in tests:
                 if self.record is 'PTR':
                     d = subdomain
@@ -429,6 +427,7 @@ class SubFuz():
                         # basically don't count queries that's TXT or MX if querying a server doesn't respond to ANY
                         self.sl.n_scanned += 1
                         self.sl.n_unscanned -= 1
+                        self.sl.scanned.append(subdomain)
                 except Exception as e:
                     try:
                         self.log.fatal(('Domain Query failed on %s.'  % d), False)

@@ -2,6 +2,7 @@
 SubFuz 2.1.0 05.24.2019
 - Improvement for the dns_server function in domainfuzzer.py, enabling better accuracy for dns server selection
 - Preferred lookup changed back to UDP after optimizing in lookup methods
+- Fixed bug with "Fail" counter
 ----------------------------
 SubFuz 2.0.10 05.23.2019
 - Changing default preferred lookup to TCP
