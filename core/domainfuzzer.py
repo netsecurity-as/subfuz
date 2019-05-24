@@ -45,6 +45,7 @@ class SubFuz():
         else: self.dns = config['config']['dns_fallback']
         if args.protocol: self.protocol = args.protocol
         else: self.protocol = config['config']['dns_fallback_protocol']
+        self.protocol = self.protocol.upper()
         if args.record: self.record = args.record
         else: self.record = config['config']['dns_fallback_record']
         self.args = args
@@ -60,78 +61,106 @@ class SubFuz():
         self.f3 = '{:10}'
         self.f4 = '{:46}'
 
-
     def dns_server(self):
-        ns_record = lookup(self.domain, 'NS', self.config['config']['dns_fallback'], self.protocol, self.timeout)
-        if not ns_record:
-            ns_record = lookup(".".join(self.domain.split('.')[-2:]), 'NS', self.config['config']['dns_fallback'], self.protocol, self.timeout)
-            # TODO very ugly way of doing it, https://publicsuffix.org/list/public_suffix_list.dat is on the to-do list
-            # currently doesn't handle target domain inputs like subdomain.domain.co.uk or similar domains very well yet.
-        # Grab NS record data
-        # rdtype 2=NS
-        nameservers = [x for x in ns_record if x.rdtype == 2]
+        # If dns override is not specified
         dns_servers = []
-        self.log.normal('Name Servers:', True)
-        if nameservers:
-            # For every NS record found
-            for y in nameservers[0]:
-                dns_server_name = y.target.to_text()
-                # get DNS server IP
-                try:
-                    dns_server = lookup(dns_server_name,'A', self.config['config']['dns_fallback'], self.protocol, self.timeout)[0].items[0].to_text()
-                except:
-                    self.log.fatal(self.f4.format(dns_server_name) + '{:15}'.format('Unabel to resolv DNS server - Likely due to unstable network connection'), False)
-                    sys.exit()
-                # Zone transfer
-                if self.zone:
+        if not self.args.dns:
+            ns_record = lookup(self.domain, 'NS', self.config['config']['dns_fallback'], self.protocol, self.timeout)
+            if not ns_record:
+                ns_record = lookup(".".join(self.domain.split('.')[-2:]), 'NS', self.config['config']['dns_fallback'], self.protocol, self.timeout)
+                # TODO very ugly way of doing it, https://publicsuffix.org/list/public_suffix_list.dat is on the to-do list
+                # currently doesn't handle target domain inputs like subdomain.domain.co.uk or similar domains very well yet.
+            nameservers = [x for x in ns_record if x.rdtype == 2]
+            if nameservers:
+                self.log.normal('Name Servers:', True)
+                # For every NS record found
+                for y in nameservers[0]:
+                    dns_server_name = y.target.to_text()
+                    # get DNS server IP
                     try:
-                        z = dns.zone.from_xfr(dns.query.xfr(dns_server, self.domain, timeout=10, lifetime=10))
-                        self.log.good(self.f4.format(dns_server_name) + '{:15}'.format(dns_server) + ' - Zone Transfer allowed.', True)
-                        names = z.nodes.keys()
-                        for n in names:
-                            self.log.normal(z[n].to_text(n), True)
+                        dns_servers.append(
+                            [lookup(dns_server_name,'A', self.config['config']['dns_fallback'], self.protocol, self.timeout)[0].items[0].to_text(),
+                             y.target.to_text()])
                     except:
-                        self.log.warn(self.f4.format(dns_server_name) + '{:15}'.format(dns_server) + ' - Zone Transfer not allowed.', True)
-                else:
-                    self.log.neutral(self.f4.format(dns_server_name) + '{:15}'.format(dns_server), True)
-                # Testing for open TCP and UDP ports for DNS servers, and what type of records are permitted.
-                # TCP
-                tans = lookup(self.domain, 'ANY', dns_server, 'TCP', self.timeout)
-                if tans:
-                    if [x for x in tans if x.rdtype == 1 or x.rdtype == 28 or x.rdtype == 5 or x.rdtype == 15 or x.rdtype == 16]:
-                        dns_servers.append(['TCP', dns_server, 'ANY'])
-                    else:
-                        dns_servers.append(['TCP', dns_server, 'A'])
-                # UDP
-                uans = lookup(self.domain, 'ANY', dns_server, 'UDP', self.timeout)
-                if uans:
-                    if [x for x in uans if x.rdtype == 1 or x.rdtype == 28 or x.rdtype == 5 or x.rdtype == 15 or x.rdtype == 16]:
-                        dns_servers.append(['UDP', dns_server, 'ANY'])
-                    else:
-                        dns_servers.append(['UDP', dns_server, 'A'])
+                        self.log.fatal(self.f4.format(dns_server_name) + '{:15}'.format('Unabel to resolv DNS server - Likely due to unstable network connection'), False)
+                        sys.exit()
+            else:
+                self.log.warn('No Name Servers found for %s' % self.domain, True)
+                sys.exit()
+        else:
+            dns_servers.append([self.args.dns, 'N/A'])
+        # Zone transfer
+        for dns_server in dns_servers:
+            if self.zone:
+                try:
+                    z = dns.zone.from_xfr(dns.query.xfr(dns_server[0], self.domain, timeout=10, lifetime=10))
+                    self.log.good(self.f4.format(dns_server[1]) + '{:15}'.format(dns_server[0]) + ' - Zone Transfer allowed.', True)
+                    names = z.nodes.keys()
+                    for n in names:
+                        self.log.normal(z[n].to_text(n), True)
+                except:
+                    self.log.warn(
+                        self.f4.format(dns_server[1]) + '{:15}'.format(dns_server[0]) + ' - Zone Transfer not allowed.', True)
+            else:
+                self.log.neutral(self.f4.format(dns_server[1]) + '{:15}'.format(dns_server[0]), True)
 
-            # pick the best type of nameserver and record combination
-            if not self.args.dns and dns_servers:
-                a = [i for i in dns_servers if i[0] == 'UDP' and i[2] == 'ANY']
-                b = [i for i in dns_servers if i[0] == 'TCP' and i[2] == 'ANY']
-                c = [i for i in dns_servers if i[0] == 'UDP' and i[2] == 'A']
-                d = [i for i in dns_servers if i[0] == 'TCP' and i[2] == 'A']
-                if b:  # ANY + TCP
-                    self.dns, self.protocol, self.record= b[0][1], b[0][0], b[0][2]
-                elif a:  # ANY + UDP
-                    self.dns, self.protocol, self.record = a[0][1], a[0][0], a[0][2]
-                elif d:  # A + TCP
-                    self.dns, self.protocol, self.record = d[0][1], d[0][0], d[0][2]
-                elif c:  # A + UDP
-                    self.dns, self.protocol, self.record = c[0][1], c[0][0], c[0][2]
+            # Testing for open TCP and UDP ports for DNS servers, and what type of records are permitted.
+            # TCP - ANY
+            dns_result = []
+            start = time.time()
+            tany = lookup(self.domain, 'ANY', dns_server[0], 'TCP', self.timeout)
+            end = time.time()
+            if tany:
+                if [x for x in tany if x.rdtype == 1 or x.rdtype == 28 or x.rdtype == 5 or x.rdtype == 15 or x.rdtype == 16]:
+                    dns_result.append(['TCP', dns_server[0], 'ANY', end - start])
+            # TCP - A
+            start = time.time()
+            ta = lookup(self.domain, 'A', dns_server[0], 'TCP', self.timeout)
+            end = time.time()
+            if ta:
+                if [x for x in ta if x.rdtype == 1]:
+                    dns_result.append(['TCP', dns_server[0], 'A', end - start])
+            # UDP - ANY
+            start = time.time()
+            uany = lookup(self.domain, 'ANY', dns_server[0], 'UDP', self.timeout)
+            end = time.time()
+            if uany:
+                if [x for x in uany if x.rdtype == 1 or x.rdtype == 28 or x.rdtype == 5 or x.rdtype == 15 or x.rdtype == 16]:
+                    dns_result.append(['UDP', dns_server[0], 'ANY', end - start])
+            # UDP - A
+            start = time.time()
+            ua = lookup(self.domain, 'A', dns_server[0], 'UDP', self.timeout)
+            end = time.time()
+            if ua:
+                if [x for x in ua if x.rdtype == 1]:
+                    dns_result.append(['UDP', dns_server[0], 'A', end - start])
 
+
+        # Figure out the best combination to use
+        dns_result = sorted(dns_result, key=lambda x: (x[3], x[1], x[0], x[2]))
+        a = [i for i in dns_result if i[0] == 'UDP' and i[2] == 'ANY']
+        b = [i for i in dns_result if i[0] == 'TCP' and i[2] == 'ANY']
+        c = [i for i in dns_result if i[0] == 'UDP' and i[2] == 'A']
+        d = [i for i in dns_result if i[0] == 'TCP' and i[2] == 'A']
+
+        if a:  # ANY + UDP
+            self.dns, self.protocol, self.record, delay = a[0][1], a[0][0], a[0][2], a[0][3]
+        elif b:  # ANY + TCP
+            self.dns, self.protocol, self.record, delay = b[0][1], b[0][0], b[0][2], b[0][3]
+        elif c:  # A + UDP
+            self.dns, self.protocol, self.record, delay = c[0][1], c[0][0], c[0][2], c[0][3]
+        elif d:  # A + TCP
+            self.dns, self.protocol, self.record, delay = d[0][1], d[0][0], d[0][2], d[0][3]
+
+
+        # Compensate for override
         override_dns = self.args.dns
         override_record = self.args.record
         override_protocol = self.args.protocol
         if override_record: self.record = override_record
         if override_dns: self.dns = override_dns
         if override_protocol: self.protocol = override_protocol
-        self.log.neutral('Using nameserver %s, query type %s over %s' % (self.dns, self.record, self.protocol), True)
+        self.log.neutral('Using nameserver %s, query type %s over %s with RTT of %.4f seconds' % (self.dns, self.record, self.protocol, delay), True)
 
 
     def check_wildcard(self, domain_addr):
@@ -353,10 +382,12 @@ class SubFuz():
                     subdomain = self.sl.ptr_unscanned_ip.pop(0)
                     self.sl.ptr_scanned += 1
                 else:
-                    if self.args.record: tests = [self.record]
-                    elif self.record is 'A': tests = ['A', 'TXT', 'MX']
-                    else: tests = ['ANY']
                     subdomain = self.sl.unscanned.pop(0)
+                    if self.args.record: tests = [self.record]
+                    elif self.record is 'A':
+                        if subdomain == '': tests = ['A', 'TXT', 'MX']
+                        else: tests = ['A']
+                    else: tests = ['ANY']
             except:
                 if len(self.sl.unscanned) is 0:
                     return
@@ -391,7 +422,8 @@ class SubFuz():
                         else:
                             self.sl.scan_failed.append([subdomain, 1])
                         self.sl.unscanned.insert(0,subdomain)
-                    if ans != False and self.record is not 'PTR':
+                    if ans != False and self.record is not 'PTR' and ((t == 'ANY' or t == 'A') or t == self.args.record):
+                        # basically don't count queries that's TXT or MX if querying a server doesn't respond to ANY
                         self.sl.n_scanned += 1
                         self.sl.n_unscanned -= 1
                 except Exception as e:
