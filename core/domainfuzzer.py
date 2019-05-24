@@ -26,6 +26,7 @@ class ScanList():
         self.ptr_unscanned_ip = []
         self.ptr_scanned = 0
         self.scan_failed = []
+        self.failcounter = 0
 
 
 class SubFuz():
@@ -253,7 +254,7 @@ class SubFuz():
                 percentage = math.ceil(self.sl.n_scanned+0.0)/total*100
                 sys.stdout.write("Status: " + col.cyan + "%d/%d " %(self.sl.n_scanned, total) + col.end + "domains tested. "
                                  + col.brown + "%.2f%%" % percentage + col.end + " done. failed: " + col.red +"%d" %
-                                 len([x for x in self.sl.scan_failed if x[1] == self.retry]) + col.end + " \r")
+                                 self.sl.failcounter + col.end + " \r")
                 sys.stdout.flush()
             time.sleep(0.05)
         self.log.printer()
@@ -419,6 +420,7 @@ class SubFuz():
                             z = self.sl.scan_failed.index(hit[0])
                             self.sl.scan_failed[z][1] += 1
                             if hit[0][1] > self.retry:
+                                self.sl.failcounter += 1
                                 continue
                         else:
                             self.sl.scan_failed.append([subdomain, 1])
