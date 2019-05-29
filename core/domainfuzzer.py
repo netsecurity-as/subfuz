@@ -155,7 +155,9 @@ class SubFuz():
             self.dns, self.protocol, self.record, delay = c[0][1], c[0][0], c[0][2], c[0][3]
         elif d:  # A + TCP
             self.dns, self.protocol, self.record, delay = d[0][1], d[0][0], d[0][2], d[0][3]
-
+        else: #fallback
+            self.dns, self.protocol, self.record, delay = self.config['config']['dns_fallback'], self.config['config']['dns_fallback_protocol'], self.config['config']['dns_fallback_record'], 0
+            self.log.warn('Unable to find information about %s, falling back to DNS %s, Proto %s, Type %s ' % (self.domain, self.dns, self.protocol, self.record), True)
 
         # Compensate for override
         override_dns = self.args.dns
