@@ -34,7 +34,7 @@ class SubFuz():
         self.handler = SIGINT_handler()
         signal.signal(signal.SIGINT, self.handler.signal_handler)
         self.log = Output(args.log_filename, args.csv_filename, config['config']['error_file'], args.quiet)
-        self.domain = domain.decode('utf-8').encode('idna')
+        self.domain = domain.encode('idna')
         self.throttle = args.z / 1000.0
         self.threads = args.t
         self.zone = args.zone
