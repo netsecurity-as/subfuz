@@ -72,7 +72,7 @@ class SubFuz():
                 # TODO very ugly way of doing it, https://publicsuffix.org/list/public_suffix_list.dat is on the to-do list
                 # currently doesn't handle target domain inputs like subdomain.domain.co.uk or similar domains very well yet.
                 if not ns_record:  # Exit early if ns_record is not found.
-                    self.log.fatal('Unabel to lookup NS server', False)
+                    self.log.fatal('Unable to lookup NS server', False)
                     sys.exit()
             nameservers = [x for x in ns_record if x.rdtype == 2]
             if nameservers:
@@ -86,7 +86,7 @@ class SubFuz():
                             [lookup(dns_server_name,'A', self.config['config']['dns_fallback'], self.protocol, self.timeout)[0].items[0].to_text(),
                              y.target.to_text()])
                     except:
-                        self.log.fatal(self.f4.format(dns_server_name) + '{:15}'.format('Unabel to resolv DNS server - Likely due to unstable network connection'), False)
+                        self.log.fatal(self.f4.format(dns_server_name) + '{:15}'.format('Unable to resolv DNS server - Likely due to unstable network connection'), False)
                         sys.exit()
             else:
                 self.log.warn('No Name Servers found for %s' % self.domain, True)
