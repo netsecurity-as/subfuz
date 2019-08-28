@@ -115,7 +115,8 @@ if __name__ == "__main__":
         if not args.quiet: 
             print ("Scanning: %s" % domain)
         sf = SubFuz(domain, config, args, PLUGINS_DIR, CORE_DIR)
-        sf.dns_server()
+        if sf.dns_server() == False: 
+            continue
         sf.check_wildcard(sf.domain)
         sf.execute_plugins(plugins, sf)
         sf.scan()
