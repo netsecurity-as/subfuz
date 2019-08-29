@@ -73,7 +73,7 @@ class SubFuz():
                 # currently doesn't handle target domain inputs like subdomain.domain.co.uk or similar domains very well yet.
                 if not ns_record:  # Exit early if ns_record is not found.
                     self.log.fatal('Unabel to lookup NS server', False)
-                    sys.exit()
+                    return False
             nameservers = [x for x in ns_record if x.rdtype == 2]
             if nameservers:
                 self.log.normal('Name Servers:', True)
@@ -90,7 +90,7 @@ class SubFuz():
                         sys.exit()
             else:
                 self.log.warn('No Name Servers found for %s' % self.domain, True)
-                sys.exit()
+                return False
         else:
             dns_servers.append([self.args.dns, self.args.dns])
         # Zone transfer
@@ -167,7 +167,7 @@ class SubFuz():
         if override_dns: self.dns = override_dns
         if override_protocol: self.protocol = override_protocol
         self.log.neutral('Using nameserver %s, query type %s over %s with RTT of %.4f seconds' % (self.dns, self.record, self.protocol, delay), True)
-
+        return True
 
     def check_wildcard(self, domain_addr):
         try:
