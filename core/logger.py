@@ -78,7 +78,10 @@ class Output():
 
     def error(self, message):
         if self.errorfile:
-            self.errorfile.write(message + '\n')
+            try:
+                self.errorfile.write(message.encode('utf-8') + '\n')
+            except:
+                print('ERROR - unable to write to file: ' + message)
 
     def normal(self, message, log):
         if not self.quiet: print(message)
