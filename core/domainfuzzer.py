@@ -250,17 +250,21 @@ class SubFuz():
             threads.append(t)
             t.start()
         while any(t.is_alive() for t in threads):
-            if sys.stdout.isatty() and not self.args.quiet:
-                self.log.printer()
-                total = self.sl.n_unscanned + self.sl.n_scanned
-                percentage = math.ceil(self.sl.n_scanned+0.0)/total*100
-                sys.stdout.write("Status: " + col.cyan + "%d/%d " %(self.sl.n_scanned, total) + col.end + "domains tested. "
-                                 + col.brown + "%.2f%%" % percentage + col.end + " done. failed: " + col.red +"%d" %
-                                 self.sl.failcounter + col.end + " \r")
-                sys.stdout.flush()
+            self.status_print()
             time.sleep(0.05)
-        self.log.printer()
-        if not self.args.quiet: sys.stdout.write(' ' * 64 + '\n')
+        self.status_print(True)
+        return
+
+    def status_print(self, end=False):
+        if sys.stdout.isatty() and not self.args.quiet:
+            self.log.printer()
+            total = self.sl.n_unscanned + self.sl.n_scanned
+            percentage = math.ceil(self.sl.n_scanned + 0.0) / total * 100
+            sys.stdout.write("Status: " + col.cyan + "%d/%d " % (self.sl.n_scanned, total) + col.end + "domains tested. "
+                             + col.brown + "%.2f%%" % percentage + col.end + " done. failed: " + col.red + "%d" %
+                             self.sl.failcounter + col.end + " \r")
+            if end: sys.stdout.write('\n\n')
+            sys.stdout.flush()
         return
 
 
