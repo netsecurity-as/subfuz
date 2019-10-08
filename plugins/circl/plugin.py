@@ -1,7 +1,6 @@
 from core.env import SIGINT_handler
 import signal
 from core.logger import Output
-from core.dnslookup import lookup
 import requests
 import json
 
@@ -31,9 +30,16 @@ def execute(**kwargs):
             for x in data:
                 d.append(x['rdata'])
             return set(d)
+        elif r.status_code == 200:
+            #empty response, nothing found
+            return
         elif r.status_code == 401:
             raise CError('circl: Unauthorized')
-        elif r.status_code != 200:
+        elif r.status_code == 403:
+            raise CError('circl: Not authorized to access resource')
+        elif r.status_code == 429:
+            raise CError('circl: Quota exhausted')
+        else:
             raise CError('circl: Unexpected error, status code: %d' % r.status_code )
     except:
         raise
