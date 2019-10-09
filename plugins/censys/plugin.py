@@ -23,7 +23,7 @@ def execute(domain, config, **kwargs):
         max_pages = config['max_page']
         while max_pages >= page:
             url = "https://censys.io/api/v1/search/certificates"
-            payload = '{"query":"%s","page":%d,"fields":["parsed.subject_dn", "parsed.names"],"flatten":true}' % (
+            payload = '{"query":"%s","page":%d,"fields":["parsed.names"],"flatten":true}' % (
             domain.rstrip(), page)
             r = requests.post(url, auth=(config['uid'], config['secret']), json=payload)
             if r.status_code == 403:
