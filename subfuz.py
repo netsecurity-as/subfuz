@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import importlib, os, argparse, json, sys
+import importlib, os, argparse, json, sys, io
 from core import env
 from core.domainfuzzer import SubFuz
 
@@ -59,7 +59,7 @@ Author: Torstein Mauseth @ Netsecurity
     plugin_args   = parser.add_argument_group('plugins')
 
 
-    required_args.add_argument('-d', help='Specify domain to fuzz, or..', dest='target')
+    required_args.add_argument('-d', help='Specify domain to fuzz, or..', dest='target', type=lambda s: unicode(s, 'utf8'))
     required_args.add_argument('-l', help='Specify list of domains to fuzz', dest='target_list')
     optional_args.add_argument('-w', help='Specify fuzzing dictionary to use', dest='dictionary')
     optional_args.add_argument('-o', help='Write output to a file', dest='log_filename', required=False, default=False)
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     if not args.quiet: print (banner)
     if args.target_list:
         try:
-            targets = map(str.strip, open(args.target_list, 'r').readlines())
+            targets = map(unicode.strip, io.open(args.target_list, encoding='utf-8', mode='r').readlines())
             targets = filter(None, targets)
         except:
             print ("Could not open output file: %s" % args.target_list)
@@ -112,10 +112,9 @@ if __name__ == "__main__":
     elif args.target:
         targets = [args.target]
     for domain in targets:
-        udomain = domain.decode('utf-8')
-        if not args.quiet: 
-            print ("Scanning: %s" % udomain)
-        sf = SubFuz(udomain, config, args, PLUGINS_DIR, CORE_DIR)
+        if not args.quiet:
+            print ("Scanning: %s" % domain)
+        sf = SubFuz(domain, config, args, PLUGINS_DIR, CORE_DIR)
         if sf.dns_server() == False: 
             continue
         sf.check_wildcard(sf.domain)
