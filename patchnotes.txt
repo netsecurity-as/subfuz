@@ -1,4 +1,9 @@
 ----------------------------
+SubFuz 2.1.1 10.09.2019
+- Fixed bug in UTF-8 handling of top-domains
+- Fixed bug in circl plugin
+- Fixed bug in error logging with UTF-8 symbols
+----------------------------
 SubFuz 2.1.0 05.24.2019
 - Improvement for the dns_server function in domainfuzzer.py, enabling better accuracy for dns server selection
 - Preferred lookup changed back to UDP after optimizing in lookup methods

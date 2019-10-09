@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import importlib, os, argparse, json, sys, io
+import importlib, os, argparse, json, sys
 from core import env
 from core.domainfuzzer import SubFuz
 
@@ -12,7 +12,7 @@ banner = '''             ___     _____
       \/          \/                 \/\n
 '''
 
-VERSION = "2.1.0"
+VERSION = "2.1.1"
 
 (SF_FILE, SF_DIR) = env.setup_core_paths(os.path.realpath(__file__))
 PLUGINS_DIR     = os.path.join(SF_DIR, "plugins")
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     if not args.quiet: print (banner)
     if args.target_list:
         try:
-            targets =  map(unicode.strip, io.open(args.target_list, encoding='utf-8', mode='r').readlines())
+            targets = map(str.strip, open(args.target_list, 'r').readlines())
             targets = filter(None, targets)
         except:
             print ("Could not open output file: %s" % args.target_list)
@@ -112,9 +112,10 @@ if __name__ == "__main__":
     elif args.target:
         targets = [args.target]
     for domain in targets:
+        udomain = domain.decode('utf-8')
         if not args.quiet: 
-            print ("Scanning: %s" % domain)
-        sf = SubFuz(domain, config, args, PLUGINS_DIR, CORE_DIR)
+            print ("Scanning: %s" % udomain)
+        sf = SubFuz(udomain, config, args, PLUGINS_DIR, CORE_DIR)
         if sf.dns_server() == False: 
             continue
         sf.check_wildcard(sf.domain)
