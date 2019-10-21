@@ -57,7 +57,7 @@
             "enable": true
         },
         "spyse": {
-            "enable": true,
+            "enable": false,
             "api_token": "<api_token>",
             "max_pages": 10
         }    
