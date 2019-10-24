@@ -55,6 +55,11 @@
         },
         "dnsdumpster": {
             "enable": true
-        }
+        },
+        "spyse": {
+            "enable": false,
+            "api_token": "<api_token>",
+            "max_pages": 10
+        }    
     }
 }
