@@ -60,6 +60,10 @@
             "enable": false,
             "api_token": "<api_token>",
             "max_pages": 10
-        }    
+        },
+        "securitytrails": {
+            "enable": false,
+            "apikey": "<apikey>"
+        }			
     }
 }
