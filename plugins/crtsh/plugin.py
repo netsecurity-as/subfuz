@@ -18,7 +18,7 @@ def execute(domain, **kwargs):
         Output().warn("Aborted plugin: %s" % NAME, False)
         return None
     try:
-        query = 'https://crt.sh/?q=%25.' + domain.rstrip() + '&output=json'
+        query = 'https://crt.sh/?q=' + domain.rstrip() + '&output=json'
         r = requests.get(query)
         if r.status_code == 200:
             data = json.loads(r.content)

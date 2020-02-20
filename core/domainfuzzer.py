@@ -39,6 +39,8 @@ class SubFuz():
         self.threads = args.t
         self.zone = args.zone
         self.retry = config['config']['retry']
+        if args.csv_filename:
+            self.csv = True
         if args.deep: self.deep_domains = map(unicode.strip, io.open(args.deep, encoding='utf-8', mode='r').readlines())
         else: self.deep_domains = config["config"]["deep_domains"]
         self.timeout = args.p
@@ -310,7 +312,7 @@ class SubFuz():
                         else:
                             self.sl.items.append([d, item])
                             self.log.log_queue.append(self.f1.format(d +' ') + self.f2.format('A') + self.f3.format(item))
-                            self.log.csv_queue.append("%s,A,%s" % (d, item))
+                            self.log.csv_queue.append("%s,A,%s,%s,%s" % (d, item,item,self.domain))
 
 
                 if r.rdtype == 5:  # CNAME RECORD
@@ -322,7 +324,13 @@ class SubFuz():
                         else:
                             self.sl.items.append([d, item])
                             self.log.log_queue.append(self.f1.format(d +' ') + self.f2.format('CNAME') + self.f3.format(item.rstrip('.')))
-                            self.log.csv_queue.append("%s,CNAME,%s" % (d, item.rstrip('.')))
+                            if self.csv:
+                                cname_ans = lookup(d, 'A')
+                                for line in cname_ans:
+                                    if line.rdtype == 1:
+                                        for dns_entry in line.items:
+                                            self.log.csv_queue.append("%s,CNAME,%s,%s,%s" % (d, item.rstrip('.'), dns_entry.to_text(), self.domain))
+
 
                 if r.rdtype == 12:  # PTR RECORD
                     #d = r.name.to_text().rstrip('.').decode('utf-8').decode('idna')
@@ -332,7 +340,7 @@ class SubFuz():
                             if not [y for y in self.sl.items if item.rstrip('.') in y if query in y[1]]:
                                 self.sl.items.append([item, query])
                                 self.log.log_queue.append(self.f1.format(item.rstrip('.') +' ') + self.f2.format('PTR') + self.f3.format(query))
-                                self.log.csv_queue.append("%s,PTR,%s" % (item.rstrip('.'), query))
+                                self.log.csv_queue.append("%s,PTR,%s,%s,%s" % (item.rstrip('.'), query,query,self.domain))
                             else:
                                 wildcard = True
 
@@ -346,7 +354,7 @@ class SubFuz():
                             if [t for t in self.config['config']['txt_record_search'] if t in item]:
                                 self.sl.items.append([d, item])
                                 self.log.log_queue.append(self.f1.format(d +' ') + self.f2.format('TXT') + self.f3.format(item))
-                                self.log.csv_queue.append("%s,TXT,%s" % (d, item))
+                                self.log.csv_queue.append("%s,TXT,%s,,%s" % (d, item,self.domain))
 
                 if r.rdtype == 28:  # AAAA RECORD
                     d = r.name.to_text().rstrip('.').decode('idna').encode('utf-8')
@@ -357,7 +365,7 @@ class SubFuz():
                         else:
                             self.sl.items.append([d, item])
                             self.log.log_queue.append(self.f1.format(d +' ') + self.f2.format('AAAA') + self.f3.format(item))
-                            self.log.csv_queue.append("%s,AAAA,%s" % (d, item))
+                            self.log.csv_queue.append("%s,AAAA,%s,%s,%s" % (d, item, item, self.domain))
 
                 if r.rdtype == 15:  # MX RECORD
                     d = r.name.to_text().rstrip('.').decode('idna').encode('utf-8')
@@ -368,7 +376,14 @@ class SubFuz():
                         else:
                             self.sl.items.append([d, item])
                             self.log.log_queue.append(self.f1.format(d +' ') + self.f2.format('MX') + self.f3.format(item.split(' ')[1].rstrip('.')))
-                            self.log.csv_queue.append("%s,MX,%s" % (d, item.split(' ')[1].rstrip('.')))
+                            if self.csv:
+                                mx_value = item.split(' ')[1].rstrip('.')
+                                mx_ans = lookup(mx_value, 'A')
+                                for line in mx_ans:
+                                    if line.rdtype == 1:
+                                        for dns_entry in line.items:
+                                            self.log.csv_queue.append("%s,MX,%s,%s,%s" % (d, mx_value, dns_entry.to_text(), self.domain))
+
                             new = ['mail._domainkey', '_dmarc', 'default._domainkey', 'selector1._domainkey', 'selector2._domainkey', 's2._domainkey', 's2._domainkey']
                             for n in new:
                                 if d == self.domain:

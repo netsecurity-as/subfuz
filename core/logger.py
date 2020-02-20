@@ -38,6 +38,7 @@ class Output():
         self.log_queue = []
         self.csv_queue = []
         self.error_queue = []
+        self.already_prined = []
         self.logfile = False
         self.csvfile = False
         self.errorfile = False
@@ -66,9 +67,15 @@ class Output():
 
     def printer(self):
         while self.log_queue:
-            self.normal(self.log_queue.pop(0), True)
+            n_line = self.log_queue.pop(0)
+            if n_line not in self.already_prined:
+                self.already_prined.append(n_line)
+                self.normal(n_line, True)
         while self.csv_queue:
-            self.csv(self.csv_queue.pop(0))
+            c_line = self.csv_queue.pop(0)
+            if c_line not in self.already_prined:
+                self.already_prined.append(c_line)
+                self.csv(c_line)
         while self.error_queue:
             self.error(self.error_queue.pop(0))
 

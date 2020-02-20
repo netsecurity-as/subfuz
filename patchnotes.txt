@@ -1,4 +1,10 @@
 ----------------------------
+SubFuz 2.2.0 20.02.2019
+- CSV output now contains
+  Subdomain, Record Type, Result, Resolved IP, TopDomain
+- Adjusted crt.sh plugin to match changes on crt.sh
+- Removed duplicate prints
+----------------------------
 SubFuz 2.1.1 10.09.2019
 - Fixed bug in UTF-8 handling of top-domains
 - Fixed bug in circl plugin
