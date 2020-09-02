@@ -12,7 +12,7 @@ banner = '''             ___     _____
       \/          \/                 \/\n
 '''
 
-VERSION = "2.1.1"
+VERSION = "2.2.1"
 
 (SF_FILE, SF_DIR) = env.setup_core_paths(os.path.realpath(__file__))
 PLUGINS_DIR     = os.path.join(SF_DIR, "plugins")
@@ -20,8 +20,15 @@ CORE_DIR        = os.path.join(SF_DIR, "core")
 
 
 def initialize():
-    with open('config.json') as json_data_file:
-        config = json.load(json_data_file)
+    try:
+        with open('config.json') as json_data_file:
+            config = json.load(json_data_file)
+    except ValueError:
+        print ("Bad Json Structure in config.json")
+        sys.exit()
+    except IOError:
+        print ("config.json not found.")
+        sys.exit()
 
     override = config['config']['dns_override']
     protocol = config['config']['dns_override_protocol']

@@ -39,8 +39,8 @@ class SubFuz():
         self.threads = args.t
         self.zone = args.zone
         self.retry = config['config']['retry']
-        if args.csv_filename:
-            self.csv = True
+        if args.csv_filename: self.csv = True
+        else: self.csv = False
         if args.deep: self.deep_domains = map(unicode.strip, io.open(args.deep, encoding='utf-8', mode='r').readlines())
         else: self.deep_domains = config["config"]["deep_domains"]
         self.timeout = args.p

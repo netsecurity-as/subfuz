@@ -1,3 +1,9 @@
+Subfus 2.2.1 02.09.2020
+----------------------------
+- Bug with CSV errors when not defining a CSV
+- Remove depricate warnign for beatifulsoap
+- Removed Spyse plugin
+- Error handing when incorrect or missing JSON config
 ----------------------------
 SubFuz 2.2.0 20.02.2019
 - CSV output now contains

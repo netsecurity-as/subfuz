@@ -25,6 +25,7 @@ def execute(**kwargs):
             Output().good('Bucket %s is open' % aws_target,False)
         ans = lookup(aws_target.encode('utf-8'), 'ANY', '8.8.8.8', 'UDP', subfuz.timeout)
         if ans:
+            print "1234"
             subfuz.parse_record(ans, aws_target)
     except:
         raise

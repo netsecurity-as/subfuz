@@ -2,7 +2,11 @@ from core.env import SIGINT_handler
 import signal
 from core.logger import Output
 import requests
+import warnings
+warnings.filterwarnings("ignore")
 from BeautifulSoup import BeautifulSoup
+
+
 
 NAME        = 'dnsdumpster'
 ARG_HELP    = 'Dnsdumpster by hackertarget'
