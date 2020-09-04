@@ -1,5 +1,10 @@
-Subfus 2.2.1 02.09.2020
+Subfus 2.2.2 04.09.2020
+- Fixed issue with nameservers not resolving
+- Fixed error logging for nameserver resolving
+- Fixed proper closing of error log
+- Version check on run
 ----------------------------
+Subfus 2.2.1 02.09.2020
 - Bug with CSV errors when not defining a CSV
 - Remove depricate warnign for beatifulsoap
 - Removed Spyse plugin

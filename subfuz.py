@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import importlib, os, argparse, json, sys, io
+import importlib, os, argparse, json, sys, io, requests
 from core import env
 from core.domainfuzzer import SubFuz
+from core.logger import Output, col
 
 banner = '''             ___     _____             
    ________ _\_ |___/ ____\_ __________
@@ -12,14 +13,24 @@ banner = '''             ___     _____
       \/          \/                 \/\n
 '''
 
-VERSION = "2.2.1"
+VERSION = "2.2.2"
 
 (SF_FILE, SF_DIR) = env.setup_core_paths(os.path.realpath(__file__))
 PLUGINS_DIR     = os.path.join(SF_DIR, "plugins")
 CORE_DIR        = os.path.join(SF_DIR, "core")
 
 
+def check_version():
+    try:
+        ver = requests.get("https://raw.githubusercontent.com/netsecurity-as/subfuz/master/patchnotes.txt", timeout=1).content
+        ver = ver.split('\n')[0].split(' ')[1]
+        if ver != VERSION:
+            print ('\nWARNING\nSubfuz is out of date.\nRunning version: %s\nLatest version:  %s\n\n' % (ver,VERSION))
+    except:
+        return
+
 def initialize():
+    check_version()
     try:
         with open('config.json') as json_data_file:
             config = json.load(json_data_file)
@@ -119,10 +130,8 @@ if __name__ == "__main__":
     elif args.target:
         targets = [args.target]
     for domain in targets:
-        if not args.quiet:
-            print ("Scanning: %s" % domain)
         sf = SubFuz(domain, config, args, PLUGINS_DIR, CORE_DIR)
-        if sf.dns_server() == False: 
+        if sf.check_dns_server() == False:
             continue
         sf.check_wildcard(sf.domain)
         sf.execute_plugins(plugins, sf)

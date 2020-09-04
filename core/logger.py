@@ -123,6 +123,7 @@ class Output():
     def close(self):
         if self.csvfile: self.csvfile.close()
         if self.logfile: self.logfile.close()
+        if self.errorfile: self.errorfile.close()
 
     def __exit__(self):
         self.close()
