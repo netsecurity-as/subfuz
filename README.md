@@ -5,9 +5,9 @@ This tool has various buildt in enumeration methods, at the same time as plugin 
 When SubFuz identifies a valid subdomain, it will perform mutation techniques on the subdomain to find similar, adjacent or deeper subdomains. As an example, if web.exampe.com was discovered, SubFuz will then check DNS to see if there's a web01.example.com, web02.example.com and so on. SubFuz will also append any words listed in the config option "deep_domains", testing for things such as admin.web.example.com, api.web.example.com and so on.
 
 ### Requirements
-[![](https://img.shields.io/badge/python-2.7-blue.svg)](https://www.python.org/download/releases/2.7/)
+[![](https://img.shields.io/badge/python-3-blue.svg)](https://www.python.org/downloads/)
 
-Currently tested on Linux with python 2.7, will add better support for Windows and Python 3 soon.
+Currently tested on Linux with python 3.10
 ```
 sudo apt-get install python python-pip
 git clone https://github.com/netsecurity-as/subfuz/
@@ -17,7 +17,7 @@ pip install -r requirements.txt
 
 ### Usage
 ```
-$ python subfuz.py -h
+$ python3 subfuz.py -h
 usage: subfuz.py [-h] [-d TARGET] [-l TARGET_LIST] [-w DICTIONARY]
                  [-o LOG_FILENAME] [-csv CSV_FILENAME] [-deep DEEP] [-dns DNS]
                  [-protocol PROTOCOL] [-record RECORD] [-p P] [-z Z] [-r R]
@@ -76,7 +76,6 @@ SubFuz is currently extended with the following plugins:
 | virustotal | [/plugins/virustotal/README.md](plugins/virustotal/README.md) | [Eplox](https://github.com/Eplox/) |
 | crtsh | [/plugins/crtsh/README.md](plugins/crtsh/README.md) | [Eplox](https://github.com/Eplox/) |
 | censys | [/plugins/censys/README.md](plugins/censys/README.md) | [Eplox](https://github.com/Eplox/) |
-| fsd | findsubdomains.com | [Vegar](https://github.com/VegarLH)
 | hackertarget | hackertarget.com | [Vegar](https://github.com/VegarLH)
 | microsoft | [/plugins/microsoft/README.md](plugins/microsoft/README.md) | [Eplox](https://github.com/Eplox/) |
 | citrix | [/plugins/citrix/README.md](plugins/citrix/README.md) | [hahnium](https://github.com/hahnium) |

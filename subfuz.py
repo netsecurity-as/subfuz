@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import importlib, os, argparse, json, sys, io, requests
+import importlib, os, argparse, json, sys, requests
 from core import env
 from core.domainfuzzer import SubFuz
-from core.logger import Output, col
+#from core.logger import Output, col
 
 banner = '''             ___     _____             
    ________ _\_ |___/ ____\_ __________
@@ -13,7 +13,7 @@ banner = '''             ___     _____
       \/          \/                 \/\n
 '''
 
-VERSION = "2.2.2"
+VERSION = "3.0.0"
 
 (SF_FILE, SF_DIR) = env.setup_core_paths(os.path.realpath(__file__))
 PLUGINS_DIR     = os.path.join(SF_DIR, "plugins")
@@ -54,7 +54,8 @@ def initialize():
     # TODO: find a more elegant way to load plugin names with unique names rather than "plugin.py"
     for path, dir, file in os.walk(PLUGINS_DIR):
         for d in dir:
-            PLUGINS.append('plugins.' + d + '.plugin')
+            if d != '__pycache__':
+                PLUGINS.append('plugins.' + d + '.plugin')
     for plugin in PLUGINS:
         try:
             _PLUGINS.append(importlib.import_module(plugin))
@@ -77,7 +78,7 @@ Author: Torstein Mauseth @ Netsecurity
     plugin_args   = parser.add_argument_group('plugins')
 
 
-    required_args.add_argument('-d', help='Specify domain to fuzz, or..', dest='target', type=lambda s: unicode(s, 'utf8'))
+    required_args.add_argument('-d', help='Specify domain to fuzz, or..', dest='target')
     required_args.add_argument('-l', help='Specify list of domains to fuzz', dest='target_list')
     optional_args.add_argument('-w', help='Specify fuzzing dictionary to use', dest='dictionary')
     optional_args.add_argument('-o', help='Write output to a file', dest='log_filename', required=False, default=False)
@@ -122,8 +123,10 @@ if __name__ == "__main__":
     if not args.quiet: print (banner)
     if args.target_list:
         try:
-            targets = map(unicode.strip, io.open(args.target_list, encoding='utf-8', mode='r').readlines())
-            targets = filter(None, targets)
+            with open(args.target_list, encoding='UTF-8') as f:
+                targets = [line.rstrip() for line in f]
+            #targets = map(unicode.strip, io.open(args.target_list, encoding='utf-8', mode='r').readlines())
+            #targets = filter(None, targets)
         except:
             print ("Could not open output file: %s" % args.target_list)
             sys.exit()

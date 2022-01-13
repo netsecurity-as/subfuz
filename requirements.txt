@@ -1,3 +1,4 @@
 dnspython
 requests
-BeautifulSoup
+BeautifulSoup4
+censys

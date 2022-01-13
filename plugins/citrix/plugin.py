@@ -22,8 +22,9 @@ def execute(**kwargs):
         redirect = requests.get('https://' + citrix_targets[0])
         if 'secure.sharefile.com' not in redirect.url:
             authlogin = redirect.url.split('/')[2]
-            ans = lookup(authlogin.encode('utf-8'), 'ANY', '8.8.8.8', 'UDP', subfuz.timeout)
+            ans = lookup(authlogin, 'ANY', '8.8.8.8', 'UDP', subfuz.timeout)
             if ans:
                 subfuz.parse_record(ans, authlogin)
+                Output().neutral("Citrix sharefile found", False)
     except:
         raise

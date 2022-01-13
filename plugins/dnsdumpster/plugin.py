@@ -4,7 +4,7 @@ from core.logger import Output
 import requests
 import warnings
 warnings.filterwarnings("ignore")
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 
 
@@ -23,12 +23,13 @@ def execute(**kwargs):
         csrf_page = requests.get('https://dnsdumpster.com')
         soup = BeautifulSoup(csrf_page.content)
         csrf_token = soup.find('input', {'name': 'csrfmiddlewaretoken'}).get('value')
-        query = requests.post('https://dnsdumpster.com', data = {'csrfmiddlewaretoken' : csrf_token, 'targetip' : domain},headers={'referer' : 'https://dnsdumpster.com/'}, cookies={ 'csrftoken' : csrf_token})
+        query = requests.post('https://dnsdumpster.com', data = {'csrfmiddlewaretoken' : csrf_token, 'targetip' : domain, 'user':'free'},headers={'referer' : 'https://dnsdumpster.com/'}, cookies={ 'csrftoken' : csrf_token})
         soup = BeautifulSoup(query.content)
         sites = soup.findAll("td",attrs={"class": "col-md-4"})
         d = []
         for site in sites:
+            site.text.split(domain)[0].rstrip('\n').rstrip(' ')
             d.append(site.text.split(domain)[0] + domain)
-        return set(d)
+        return d
     except:
         raise

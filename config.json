@@ -31,12 +31,9 @@
             "enable": false,
             "uid": "",
             "secret": "",
-            "max_page": 3
+            "max_records": 100
         },
         "hackertarget":{
-            "enable": true
-        },
-        "fsd": {
             "enable": true
         },
         "microsoft": {

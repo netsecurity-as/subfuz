@@ -1,4 +1,4 @@
-import json, requests
+from censys.search import CensysCertificates
 from core.env import SIGINT_handler
 import signal
 from core.logger import Output
@@ -18,25 +18,32 @@ def execute(domain, config, **kwargs):
         Output().warn("Aborted plugin: %s" % NAME, False)
         return None
     try:
+        c = CensysCertificates(api_id=config['uid'], api_secret=config['secret'])
+        fields = [
+            "parsed.names",
+            "parsed.subject.common_name",
+            "parsed.extensions.subject_alt_name.dns_names"
+        ]
+        results = []
+        for page in c.search(domain, fields, max_records=config['max_records']):
+            results.append(page)
+        #Flatten json to array
+        list = []
+        for x in results:
+            if x.get('parsed.namesn'):
+                list += (x.get('parsed.names'))
+            
+            if x.get('parsed.subject.common_name'):
+                list += x.get('parsed.subject.common_name')
+            
+            if x.get('parsed.extensions.subject_alt_name.dns_names'):
+                list += x.get('parsed.extensions.subject_alt_name.dns_names')
+
         subdomains = []
-        page = 1
-        max_pages = config['max_page']
-        while max_pages >= page:
-            url = "https://censys.io/api/v1/search/certificates"
-            payload = '{"query":"%s","page":%d,"fields":["parsed.names"],"flatten":true}' % (
-            domain.rstrip(), page)
-            r = requests.post(url, auth=(config['uid'], config['secret']), json=payload)
-            if r.status_code == 403:
-                raise CENSYSError('Censys plugin: Unauthorized / Invalid Credentials')
-            elif r.status_code == 200:
-                data = json.loads(r.content)
-                page = data['metadata']['page'] + 1
-                max_pages = min(data['metadata']['pages'], max_pages)
-                for x in data['results']:
-                    for y in x['parsed.names']:
-                        subdomains.append(y.strip('*').strip('.'))
-            else:
-                raise CENSYSError('Censys plugin: Unknown error, HTTP status code: %d' % r.status_code)
-        return set(subdomains)
-    except:
+        for x in list:
+            subdomains.append(x.lstrip('*').lstrip('.'))
+        subdomains = sorted(set(subdomains))
+        return subdomains
+    except Exception as E:
+        print (E)
         raise

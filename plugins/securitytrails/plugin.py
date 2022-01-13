@@ -38,6 +38,6 @@ def execute(domain, config, **kwargs):
             raise securitytrailsError('500 - Internal Server Error')
         else:
             raise securitytrailsError('securitytrails plugin: Unexpected Error')
-        return set(d)
+        return d
     except:
         raise

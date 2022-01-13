@@ -25,9 +25,12 @@ def execute(**kwargs):
                       '%s-%s.mail.protection.outlook.com' % (domain[-2], domain[-1]),
                       'selector1-%s-%s._domainkey.%s.onmicrosoft.com' % (domain[-2], domain[-1], domain[-2]),
                       'selector2-%s-%s._domainkey.%s.onmicrosoft.com' % (domain[-2], domain[-1], domain[-2])]
+        i = 0
         for ms in ms_targets:
-            ans = lookup(ms.encode('utf-8'), 'ANY', '8.8.8.8', 'UDP', subfuz.timeout)
+            ans = lookup(ms, 'ANY', '8.8.8.8', 'UDP', subfuz.timeout)
             if ans:
+                i += 1
                 subfuz.parse_record(ans, ms)
+        Output().neutral("%d subdomains found" %i, False)
     except:
         raise

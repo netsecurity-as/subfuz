@@ -1,6 +1,6 @@
 import os
 import sys
-from logger import Output, col
+from core.logger import Output, col
 
 def setup_core_paths(subfuz):
     global DF_DIR
@@ -17,7 +17,4 @@ class SIGINT_handler():
         print (' ' * 60)
         Output().warn('CTRL+C pressed, aborting.', False)
         self.SIGINT = True
-
-
-
 
