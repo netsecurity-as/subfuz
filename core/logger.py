@@ -86,7 +86,7 @@ class Output():
     def error(self, message):
         if self.errorfile:
             try:
-                self.errorfile.write(message.encode('utf-8') + '\n')
+                self.errorfile.write(message + '\n')
             except:
                 print('ERROR - unable to write to file: ' + message)
 
