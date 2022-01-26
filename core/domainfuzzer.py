@@ -228,7 +228,7 @@ class SubFuz():
                         self.mx_wildcard += item
                         self.log.warn(self.f1.format("Wildcard MX record found for %s: " % d) + ", ".join(item), True)
                         wc = True
-                    if wc == True: return True
+                if wc == True: return True
                 #if not wc:
                 #    return False
         except Exception as e:
