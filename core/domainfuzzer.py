@@ -401,7 +401,7 @@ class SubFuz():
                                         for dns_entry in line.items:
                                             self.log.csv_queue.append("%s,MX,%s,%s,%s" % (d, mx_value, dns_entry.to_text(), self.domain))
 
-                            new = ['mail._domainkey', '_dmarc', 'default._domainkey', 'selector1._domainkey', 'selector2._domainkey', 's2._domainkey', 's2._domainkey']
+                            new = ['mail._domainkey', '_dmarc', 'default._domainkey', 'selector1._domainkey', 'selector2._domainkey', 's1._domainkey', 's2._domainkey']
                             for n in new:
                                 if d == self.domain:
                                     self.append_target(n)
