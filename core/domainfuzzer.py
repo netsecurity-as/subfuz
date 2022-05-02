@@ -241,6 +241,8 @@ class SubFuz():
     def execute_plugins(self, plugins, self_class):
         for name, value in self.args._get_kwargs():
             for plugin in plugins:
+                if self.handler.SIGINT:
+                    return
                 if (value is True or self.args.all) and name is plugin.NAME:
                     try:
                         plugin_conf = self.config['plugins'][plugin.NAME]
