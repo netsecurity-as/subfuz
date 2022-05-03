@@ -142,4 +142,6 @@ if __name__ == "__main__":
         sf.subnets()
         sf.ptr_scan()
         sf.stats()
+        if sf.handler.SIGINT:
+            break
         del(sf)
