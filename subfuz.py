@@ -13,7 +13,7 @@ banner = '''             ___     _____
       \/          \/                 \/\n
 '''
 
-VERSION = "3.0.0"
+VERSION = "3.0.1"
 
 (SF_FILE, SF_DIR) = env.setup_core_paths(os.path.realpath(__file__))
 PLUGINS_DIR     = os.path.join(SF_DIR, "plugins")
@@ -52,17 +52,18 @@ def initialize():
     PLUGINS = []
     _PLUGINS = []
     # TODO: find a more elegant way to load plugin names with unique names rather than "plugin.py"
-    for path, dir, file in os.walk(PLUGINS_DIR):
+    for path, dir, files in os.walk(PLUGINS_DIR):
         for d in dir:
             if d != '__pycache__':
-                PLUGINS.append('plugins.' + d + '.plugin')
+                plugin_name = 'plugins.' + d + '.plugin'
+                # Check if the plugin is enabled in the configuration
+                if config['plugins'].get(d, {}).get('enable', False):
+                    PLUGINS.append(plugin_name)
     for plugin in PLUGINS:
         try:
             _PLUGINS.append(importlib.import_module(plugin))
         except OSError:
-            print ('Failed to load plugin %s', plugin)
-
-
+            print(f'Failed to load plugin {plugin}')
 
     example_text = '''
 Example usage:
